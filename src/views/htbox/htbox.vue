@@ -112,7 +112,13 @@ export default {
         toolbar: "",
         historyManager: "",
         tabViewEvent:'',
-        tabViewProperty: ''
+        tabViewProperty: '',
+        htForm: {
+          positionX: new this.$ht.widget.TextField(),
+          positionY: new this.$ht.widget.TextField(),
+          sizeW: new this.$ht.widget.TextField(),
+          sizeH: new this.$ht.widget.TextField()
+        }
       },
       splitView: {
         left: "",
@@ -158,17 +164,14 @@ export default {
        this.htVars.formPane.addRow([
                     '位置',
                     {
-                        id: 'positionX',
-                        textField: {                           
-                            type: 'number',
-                            value: `${that.node.position.x}`
-                        }
+                    id: 'positionX',
+                    element: this.htVars.htForm.positionX
+                  
+
                     },                   
                     {
                         id: 'positionY',
-                        textField: {                          
-                            type: 'number'
-                        }
+                        element: this.htVars.htForm.positionY
                     }
                 ],
                 [50, 80, 80]);     
@@ -176,17 +179,11 @@ export default {
                     '大小',
                     {
                         id: 'sizeW',
-                        textField: {
-                           
-                            type: 'number'
-                        }
+                        element: this.htVars.htForm.sizeW
                     },                   
                     {
                         id: 'sizeY',
-                        textField: {
-                            text: 'ht for web',
-                            type: 'number'
-                        }
+                        element: this.htVars.htForm.sizeH
                     }
                 ],
                 [50, 80, 80]);     
@@ -287,13 +284,29 @@ export default {
            
           this.handleGraphViewEventListener()     ;
     },
+    
+    /**
+     * 
+     * 处理图元节点单击
+     * @params node 图元节点
+     * @params e 事件
+     */
+    handleClickNode(node,e){
+      let nodeSize = node.getSize();     
+      let nodePosition = this.htVars.graphView.lp(e);
+      console.log('Node position is ',nodePosition);
+      this.htVars.htForm.positionX.setValue(nodePosition.x);      
+      this.htVars.htForm.positionY.setValue(nodePosition.y);
+      this.htVars.htForm.sizeW.setValue(nodeSize.width);
+      this.htVars.htForm.sizeH.setValue(nodeSize.height);
+    },
     handleGraphViewEventListener(){
       this.htVars.graphView.addInteractorListener(function (e) {
           if(e.kind === 'clickData'){
-              console.log(e.data + '被单击',e);
-              this.node.position.x = e.data._position.x;
-              this.node.position.y = e.data._position.y;
-              console.log(this.node);
+              console.log(e.data + '被单击',e,'e.size',e.data.getSize());
+              console.log(ht.widget.TextField);             
+              this.handleClickNode(e.data,e.event);
+             
           }
           else if(e.kind === 'doubleClickData'){
               console.log(e.data + '被双击');
@@ -391,7 +404,6 @@ export default {
         if (state === 'end') {
             let bound = this.htVars.graphView.getView().getBoundingClientRect(),
                 point = this.$ht.Default.getClientPoint(e);
-
             if (ht.Default.containsPoint({
                 x: bound.left,
                 y: bound.top,
@@ -401,8 +413,13 @@ export default {
                 this.htVars.historyManager.beginTransaction();
                 var paletteNode = this.htVars.palette.sm().ld(),                   
                     lp = this.htVars.graphView.lp(e),
+                    nodeSize = paletteNode.getSize(),
                     node;
-                console.log('paletteNode',paletteNode,paletteNode.s('nodeType'));
+                console.log('paletteNode',paletteNode,paletteNode.s('nodeType'),'lp is ',lp,'size is',paletteNode.getSize());
+                this.htVars.htForm.positionX.setValue(lp.x);
+                this.htVars.htForm.positionY.setValue(lp.y);
+                this.htVars.htForm.sizeW.setValue(nodeSize.width);
+                this.htVars.htForm.sizeH.setValue(nodeSize.height);
                 switch(paletteNode.s('nodeType')){
                   case 'node':
                     node = new this.$ht.Node();
@@ -420,9 +437,8 @@ export default {
         }
     },
     dropNodebyType(node,paletteNode,lp){
-      
-               this.htVars.graphView.dm().add(node);              
-               console.log('this.node',this.node);
+              this.htVars.graphView.dm().add(node);              
+              console.log('this.node',this.node);
               node.setPosition(lp.x, lp.y);
               node.setImage(paletteNode.getImage());
               node.setStyle('shape',paletteNode.getStyle('shape'));
@@ -443,7 +459,6 @@ export default {
     },
     initPaletteModel(model) {
       let group = new this.$ht.Group();
-     
       group.setName("节点列表");
       group.setExpanded(true);
      
