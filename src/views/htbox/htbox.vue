@@ -16,6 +16,7 @@ import {Message, MessageBox} from 'element-ui';
 import device from '@/api/device';
 import scada from '@/api/scada';
 import { setTimeout } from 'timers';
+
 export default {
   name: "htbox",
  
@@ -118,7 +119,11 @@ export default {
           positionY: new this.$ht.widget.TextField(),
           sizeW: new this.$ht.widget.TextField(),
           sizeH: new this.$ht.widget.TextField()
-        }
+        },
+        typeNodeProperView:'',
+        typeFlowProperView:'',
+        typePilotProperView:'',
+        typeShapeProperView:''
       },
       splitView: {
         left: "",
@@ -195,39 +200,129 @@ export default {
     * 初始化Tab切换页
     * 
     */
-  initTab(){    
-// create view
-        var div = document.createElement('div');
+  initTab(nodeType){    
+         // create view
+        let div = document.createElement('div');
         // create tab
         let properTab = new ht.Tab();
         properTab.setName('属性');
-        properTab.setView(this.htVars.properView);
-
+      
         let eventTab = new ht.Tab();
         eventTab.setName('事件');
-        eventTab.setView(this.htVars.properView);
-        
+        switch(nodeType){
+          case 'node':
+          properTab.setView(this.htVars.typeNodeProperView);
+          eventTab.setView(div);
+          break;
+          
+          case 'pipe':
+          properTab.setView(this.htVars.typeFlowProperView);
+          eventTab.setView(div);
+          break;
+        }
         // add to model
         let tabModel = this.htVars.tabView.getTabModel();
+        tabModel.clear();
+      
         tabModel.add(properTab);
         tabModel.add(eventTab);
-        /* if(selected){
-            this.htVars.tabModel.getSelectionModel().setSelection(tab);
-        } */
+      
+        tabModel.getSelectionModel().setSelection(properTab);
+        
      }, 
      /**
+      * 添加tab页面内容
+      * @param nodeType 图元节点类型
+      */
+     addTabView(nodeType){
+      
+       properTab.setView('');
+        eventTab.setView('');
+      
+     },
+     /**
       * 初始化图元节点属性列表
+      * 
       */
    initProperView(){
-         this.htVars.properView.addProperties([{
-                    name: 'name',
-                    editable: true
-                }, {
-                    name: 'label.background',
-                    accessType: 'style',
-                    editable: true,
-                    valueType: 'color'
-                }]);
+     //初始化普通节点属性
+        this.htVars.typeNodeProperView.addProperties([         
+          {
+            name: 'shape.background',
+            displayName:'填充颜色',
+            accessType: 'style',
+            editable: true,
+            valueType: 'color'
+          },
+          {
+            name: 'shape.border.color',
+            displayName: '描边',
+            accessType: 'style',
+            editable: true,
+            valueType: 'color'
+          },
+          {
+            name: 'shape.border.width',
+            displayName:'粗细',
+            accessType: 'style',
+            editable: true,
+            valueType: 'number',
+           
+          },
+          {
+            name: 'shape.dash',
+            displayName:'线性选择',
+            accessType: 'style',
+            editable: true,
+            enum: {
+              values:[true,false],
+              labels: ['-----------','————————————']
+            }
+          }
+         ]);
+         
+        //  初始化流动节点属性
+         this.htVars.typeFlowProperView.addProperties([
+           {
+             name: 'shape.border.width',
+             displayName:'管径（px）',
+             accessType: 'style',
+             editable: true,
+             valueType: 'number'
+
+           },
+            {
+             name: 'shape.border.color',
+             displayName:'颜色',
+             accessType: 'style',
+             editable: true,
+             valueType: 'color'
+           },          
+           {
+             name: 'shape.dash.width',
+             displayName:'块宽',
+             accessType: 'style',
+             editable: true,
+             valueType: 'number'
+           },
+           {
+             name: 'shape.dash.pattern',
+             displayName:'块长',
+             accessType:'style',
+           
+             valueType: 'Array'
+
+           },
+            {
+             name: 'shape.dash.color',
+             displayName:'颜色',
+             accessType: 'style',
+             editable: true,
+             valueType: 'color'
+           }
+
+          
+         ])
 
    },
    /**
@@ -243,6 +338,10 @@ export default {
         this.htVars.formPane = new this.$ht.widget.FormPane();
         this.htVars.tabView = new this.$ht.widget.TabView();
         this.htVars.formPaneEvent =new this.$ht.widget.FormPane();
+        this.htVars.typeNodeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typeFlowProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typeShapeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typePilotProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         
         let leftSplitView = new this.$ht.widget.SplitView(this.htVars.formPane,this.htVars.tabView,'v',.3);
         let splitView = new this.$ht.widget.SplitView(this.htVars.palette, this.htVars.graphView, "h", .2),
@@ -251,39 +350,39 @@ export default {
         this.htVars.historyManager= new this.$ht.HistoryManager(this.htVars.dataModel);
            
           
-            this.initformPane();
-            // this.initformPaneEvent();
-            this.initTab();
-            this.initProperView();
-          //  this.htVars.accordionView.add('属性列表',this.htVars.properView,true);
-            this.htVars.accordionView.add('',this.htVars.formPane,true);
-            this.view = upSplitView.getView();
-            let style = this.view.style;
-     this.initPaletteModel(this.htVars.palette.dm());
-            this.htVars.historyManager.clear();
-            // this.htVars.graphView.setEditable(true);
-           var editInteractor = new ht.graph.XEditInteractor(this.htVars.graphView);
-            this.htVars.graphView.setInteractors(new this.$ht.List([
-                new ht.graph.ScrollBarInteractor(this.htVars.graphView),
-                new ht.graph.SelectInteractor(this.htVars.graphView),
-                editInteractor,
-                new ht.graph.MoveInteractor(this.htVars.graphView),
-                new ht.graph.DefaultInteractor(this.htVars.graphView),
-                new ht.graph.TouchInteractor(this.htVars.graphView , {editable: false})//禁用Touch上默认的编辑功能
-            ]));
+        this.initformPane();
+        this.initProperView();
+        this.initTab();
+        
+      //  this.htVars.accordionView.add('属性列表',this.htVars.properView,true);
+        this.htVars.accordionView.add('',this.htVars.formPane,true);
+        this.view = upSplitView.getView();
+        let style = this.view.style;
+        this.initPaletteModel(this.htVars.palette.dm());
+        this.htVars.historyManager.clear();
+        // this.htVars.graphView.setEditable(true);
+        var editInteractor = new ht.graph.XEditInteractor(this.htVars.graphView);
+        this.htVars.graphView.setInteractors(new this.$ht.List([
+            new ht.graph.ScrollBarInteractor(this.htVars.graphView),
+            new ht.graph.SelectInteractor(this.htVars.graphView),
+            editInteractor,
+            new ht.graph.MoveInteractor(this.htVars.graphView),
+            new ht.graph.DefaultInteractor(this.htVars.graphView),
+            new ht.graph.TouchInteractor(this.htVars.graphView , {editable: false})//禁用Touch上默认的编辑功能
+        ]));
                   
           
-            this.htVars.palette.handleDragAndDrop = this.handleDragAndDrop;
-           /*  style.position = "absolute";
-            style.top = "0";
-            style.right = "0";
-            style.bottom = "0";
-            style.left = "0"; */
-            style.border = "1px solid red";
-            style.width = "100%";
-            style.height = '100%'
-           
-          this.handleGraphViewEventListener()     ;
+        this.htVars.palette.handleDragAndDrop = this.handleDragAndDrop;
+        /*  style.position = "absolute";
+        style.top = "0";
+        style.right = "0";
+        style.bottom = "0";
+        style.left = "0"; */
+        style.border = "1px solid red";
+        style.width = "100%";
+        style.height = '100%'
+        
+      this.handleGraphViewEventListener()     ;
     },
     
     /**
@@ -295,11 +394,12 @@ export default {
     handleClickNode(node,e){
       let nodeSize = node.getSize();     
       let nodePosition = this.htVars.graphView.lp(e);
-      console.log('Node position is ',nodePosition);
+      console.log('Node position is ',nodePosition,'nodeType is',node.getStyle('nodeType'));
       this.htVars.htForm.positionX.setValue(nodePosition.x);      
       this.htVars.htForm.positionY.setValue(nodePosition.y);
       this.htVars.htForm.sizeW.setValue(nodeSize.width);
       this.htVars.htForm.sizeH.setValue(nodeSize.height);
+       this.initTab(node.s('nodeType'));
     },
     /**
      * 
@@ -334,7 +434,7 @@ export default {
           else if(e.kind === 'beginMove'){
               console.log('开始移动图元');
           }              
-          else if(e.kind === 'betweenMove'){
+          else if(e.kind === 'betweenMove'){          
               console.log('正在移动图元');
           }             
           else if(e.kind === 'endMove'){
@@ -436,6 +536,8 @@ export default {
                     this.dropNodebyType(node,paletteNode,lp);
                   break;
                   case 'pipe':
+                    node = this.createPipeNode(lp);
+                    this.dropNodebyType(node,paletteNode,lp);
                   break;
                   case 'state':
                   break;
@@ -446,6 +548,41 @@ export default {
             }
         }
     },
+    createPipeNode(lp){
+        let pipe = new ht.Shape();      
+        pipe.s("shape.border.width", 30);        
+        pipe.s("shape.background", null);
+        pipe.s("shape.dash", true);
+        pipe.s("shape.dash.flow", true);
+        pipe.s('shape.dash.width',10);
+        pipe.s("shape.dash.color", "yellow");
+        pipe.setStyle("shape.border.color", "#000");  
+       
+        pipe.setPoints(new ht.List([
+                    {
+                        x: 0,
+                        y: 0
+                    }, {
+                        x: 0,
+                        y: 150
+                    }, {
+                        x: 150,
+                        y: 150
+                    }
+                ]
+                )
+                );
+       pipe.setSegments(new ht.List([
+            1, // moveTo
+            2, // quadraticCurveTo
+            2,
+           
+           
+           
+        ])); 
+        pipe.translate(lp.x, lp.y);
+        return pipe;
+    },
     /**
      * 按类型将图元放入画布之中
      */
@@ -455,6 +592,7 @@ export default {
               node.setPosition(lp.x, lp.y);
               node.setImage(paletteNode.getImage());
               node.setStyle('shape',paletteNode.getStyle('shape'));
+              node.setStyle('nodeType',paletteNode.getStyle('nodeType'));
                
     },
     /**
@@ -465,8 +603,8 @@ export default {
      */
     createStandardNode(group,model){
         
-          for (var i = 0; i < this.shapes.length; i++) {
-                var node = new ht.Node();
+          for (let i = 0; i < this.shapes.length; i++) {
+                let node = new ht.Node();
                 node.setName(this.shapes[i]);
                 node.setStyle('shape', this.shapes[i]); 
                 node.setStyle('draggable',true);
@@ -482,7 +620,13 @@ export default {
      * @param model 画布数据模型
      */
     createFlowNode(group,model){
-
+       let node = new ht.Node();
+        node.setName('管道');
+       
+        node.setStyle('draggable',true);
+        node.setStyle('nodeType','pipe');
+        group.addChild(node);
+        model.add(node);
     },
     /**
      * 创建形状图元节点
@@ -559,6 +703,8 @@ export default {
             console.log(document.body.scrollHeight,document.body.scrollWidth);
             this.location.reload();
         };
+      this.htVars.graphView.enableFlow();
+      this.htVars.graphView.enableDashFlow();
   }
 };
 </script>
