@@ -1,0 +1,286 @@
+<template>
+  <div id="app" ref="app">
+      <router-view></router-view>
+  </div>
+</template>
+
+<script>
+
+import { mapMutations, mapState } from "vuex";
+import {Message} from 'element-ui';
+import device from '@/api/device';
+export default {
+  name: "App",
+ 
+  data() {
+    return {
+      toolbarItems: [
+        {
+          icon: "zoomIn",
+          label: "放大",
+          action: function() {
+              console.log(this);
+            this.htVars.graphView.zoomIn(true);
+          }.bind(this)
+        },
+        {
+          icon: "zoomOut",
+          label: "缩小",
+          action: function() {
+            this.htVars.graphView.zoomOut(true);
+          }.bind(this)
+        },
+        {
+          icon: "fitContent",
+          label: "适应",
+          action: function() {
+            this.htVars.graphView.fitContent(true);
+          }.bind(this)
+        },
+        "separator",
+        {
+          label: "Image",
+          action: function() {
+            var doc = window.open().document;
+            doc.open();
+            doc.write("<img src='" + graphView.toDataURL() + "'/>");
+            doc.close();
+            doc.body.style.margin = "0";
+            doc.title = "Export image at " + new Date();
+          }
+        },
+        {
+          label: "Canvas",
+          action: function() {
+            var doc = window.open().document;
+            doc.open();
+            doc.appendChild(graphView.toCanvas());
+            doc.close();
+            doc.title = "Export canvas at " + new Date();
+            console.log(graphView.toCanvas());
+          }
+        },
+        /* 
+            dateFrom=2019-03-07T13:00:00%2B08:00&dateTo=2019-03-08T16:00:00%2B08:00
+            
+            */
+        {
+          label: "JSON",
+          action: function() {
+            var doc = window.open().document;
+            doc.open();
+            doc.write("<pre>" + dataModel.serialize() + "</pre>");
+            doc.close();
+            doc.body.style.margin = "0";
+            doc.title = "Export JSON at " + new Date();
+          }
+        },
+        "separator",
+        {
+          label: "预览",
+          action: function() {
+            sessionStorage.setItem('scadaShow',this.htVars.dataModel.serialize());
+            console.log(this.htVars.dataModel.serialize());
+            console.log(this);
+            this.$router.push({
+                path: '/show'
+            })
+          }.bind(this)
+        },
+        {
+          label: "保存",
+          action: function() {
+           
+          }
+        },
+        {
+          label: "真实使用",
+          action: function() {
+           
+          }
+        }
+      ],
+      shapes : ['rect', 'circle', 'oval', 'roundRect', 'star', 'triangle', 'hexagon', 'pentagon', 'diamond', 'rightTriangle', 'parallelogram', 'trapezoid'],
+      htVars: {
+        palette: "",
+        graphView: "",
+        dataModel: "",
+        list: "",
+        tree: "",
+        properView: "",
+        toolbar: "",
+        historyManager: ""
+      },
+      splitView: {
+        left: "",
+        right: "",
+        up: "",
+        down: ""
+      },
+      view: '',
+      supportedMeasurements: {
+          id: '',
+          name:''
+      }
+    };
+  },
+  computed: {
+    ...mapState({ htstate: "ht" })
+  },
+  methods: {
+    ...mapMutations([
+      "paletteMutation",
+      "graphViewMutation",
+      "dataModelMutation",
+      "listMutation",
+      "treeMutation",
+      "properViewMutation",
+      "toolbarMutation"
+    ]),
+    makeGraph() {
+        this.htVars.palette = new this.$ht.widget.Palette();
+        this.htVars.graphView = window.graph = new this.$ht.graph.GraphView();
+        this.htVars.dataModel = this.htVars.graphView.dm();
+        this.htVars.properView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.toolbar = new this.$ht.widget.Toolbar(this.toolbarItems);
+        this.htVars.accordionView = new this.$ht.widget.AccordionView();
+
+        let splitView = new this.$ht.widget.SplitView(this.htVars.palette, this.htVars.graphView, "h", .2),
+             mainSplitView = new this.$ht.widget.SplitView(splitView, this.htVars.accordionView, 'h', -200),
+             upSplitView = new this.$ht.widget.SplitView(this.htVars.toolbar, mainSplitView,'v',.1);
+         
+            this.htVars.historyManager= new this.$ht.HistoryManager(this.htVars.dataModel);
+           
+           this.htVars.accordionView.add('属性列表',this.htVars.properView,true);
+           
+            this.view = upSplitView.getView();
+            let style = this.view.style;
+               
+            this.initPaletteModel(this.htVars.palette.dm());
+            this.htVars.historyManager.clear();
+            this.htVars.graphView.setEditable(true);
+            this.htVars.properView.addProperties([{
+                name: 'name',
+                displayName: '节点名称',
+                editable: true
+            }, {
+                name: 'label.background',
+                displayName: '名称背景颜色',
+                accessType: 'style',
+                editable: true,
+                valueType: 'color'
+            }]);
+
+            this.htVars.palette.handleDragAndDrop = this.handleDragAndDrop;
+            style.position = "absolute";
+            style.top = "0";
+            style.right = "0";
+            style.bottom = "0";
+            style.left = "0";
+            style.border = "1px solid red";
+          
+            var editInteractor = window.editInteractor = graph.getEditInteractor();
+               
+    },
+    handleDragAndDrop(e, state) {
+        if (state === 'end') {
+            let bound = this.htVars.graphView.getView().getBoundingClientRect(),
+                point = this.$ht.Default.getClientPoint(e);
+
+            if (ht.Default.containsPoint({
+                x: bound.left,
+                y: bound.top,
+                width: bound.width,
+                height: bound.height
+            }, point)) {
+                this.htVars.historyManager.beginTransaction();
+                var paletteNode = this.htVars.palette.sm().ld(),
+                    node = new this.$ht.Node(),
+                    lp = this.htVars.graphView.lp(e);
+               this.htVars.graphView.dm().add(node);
+                node.setPosition(lp.x, lp.y);
+                node.setImage(paletteNode.getImage());
+                node.setStyle('shape',paletteNode.getStyle('shape'));
+                this.htVars.historyManager.endTransaction();
+            }
+        }
+    },
+    createStandardNode(group,model){
+        
+          for (var i = 0; i < this.shapes.length; i++) {
+                var node = new ht.Node();
+                node.setName(this.shapes[i]);
+                node.setStyle('shape', this.shapes[i]); 
+                node.setStyle('draggable',true);
+                group.addChild(node);
+                model.add(node);
+            } 
+            console.log('group is ',group);
+    },
+    initPaletteModel(model) {
+      let group = new this.$ht.Group();
+     
+      group.setName("节点列表");
+      group.setExpanded(true);
+     
+       var node = new this.$ht.Node();
+       group.addChild(node);
+      this.createStandardNode(group,model);
+      model.add(group);
+     
+    },
+    bindingWindowKey(){
+        window.addEventListener("resize", function(e) {
+                mainSplitView.iv();
+            });
+        window.addEventListener('keydown', function(e) {
+            // ctrl + shift + z
+            if (ht.Default.isCtrlDown(e) && ht.Default.isShiftDown(e) && e.keyCode === 90) {
+                historyManager.redo();
+            }
+            // ctrl + z
+            else if (ht.Default.isCtrlDown(e) && e.keyCode === 90) {
+                historyManager.undo();
+            }
+        });
+    },
+    getDeviceList(){
+        device.getDeviceList({'type':'c8y_MQTTDevice'}).then(res=>{
+            if(res.data.managedObjects.length>0){
+                console.log(res.data.managedObjects);
+                device. getSupportedMeasurements(166143,'').then(res=>{
+                   if(res.data.c8y_SupportedSeries.length>0){
+                    //    this.supportedMeasurements = res.data.c8y_SupportedSeries;
+                       this.supportedMeasurements = {...res.data.c8y_SupportedSeries,...this.supportedMeasurements}
+                       console.log(this.supportedMeasurements);
+                   }
+                })
+            }
+        })
+    }
+  },
+
+  created() {    
+    this.getDeviceList();
+    this.makeGraph();
+  },
+  mounted() {
+    //   this.$refs.app.appendChild(this.view);
+      const that = this;
+        window.onresize = function(){
+            console.log(document.body.clientWidth,document.body.clientHeight);
+            console.log(document.body.scrollHeight,document.body.scrollWidth);
+            this.location.reload();
+        };
+  }
+};
+</script>
+
+<style scoped lang="scss">
+#app {
+    .ht-widget-palette{
+        border: 10px solid red;
+        background: #000 !important;
+    }
+}
+</style>
