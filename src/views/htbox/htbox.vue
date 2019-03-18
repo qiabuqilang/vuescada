@@ -399,20 +399,34 @@ export default {
                 height: bound.height
             }, point)) {
                 this.htVars.historyManager.beginTransaction();
-                var paletteNode = this.htVars.palette.sm().ld(),
-                    node = new this.$ht.Node(),
-                    lp = this.htVars.graphView.lp(e);
-                    console.log('paletteNode',paletteNode);
-               this.htVars.graphView.dm().add(node);
-               this.node.position.x = lp.x;
-               this.node.position.y = lp.y;
-               console.log('this.node',this.node);
-                node.setPosition(lp.x, lp.y);
-                node.setImage(paletteNode.getImage());
-                node.setStyle('shape',paletteNode.getStyle('shape'));
-                this.htVars.historyManager.endTransaction();
+                var paletteNode = this.htVars.palette.sm().ld(),                   
+                    lp = this.htVars.graphView.lp(e),
+                    node;
+                console.log('paletteNode',paletteNode,paletteNode.s('nodeType'));
+                switch(paletteNode.s('nodeType')){
+                  case 'node':
+                    node = new this.$ht.Node();
+                    this.dropNodebyType(node,paletteNode,lp);
+                  break;
+                  case 'pipe':
+                  break;
+                  case 'state':
+                  break;
+                  case 'pilot':
+                  break;
+                }
+              this.htVars.historyManager.endTransaction();
             }
         }
+    },
+    dropNodebyType(node,paletteNode,lp){
+      
+               this.htVars.graphView.dm().add(node);              
+               console.log('this.node',this.node);
+              node.setPosition(lp.x, lp.y);
+              node.setImage(paletteNode.getImage());
+              node.setStyle('shape',paletteNode.getStyle('shape'));
+               
     },
     createStandardNode(group,model){
         
@@ -421,6 +435,7 @@ export default {
                 node.setName(this.shapes[i]);
                 node.setStyle('shape', this.shapes[i]); 
                 node.setStyle('draggable',true);
+                node.setStyle('nodeType','node');
                 group.addChild(node);
                 model.add(node);
             } 
