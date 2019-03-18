@@ -153,7 +153,9 @@ export default {
       "properViewMutation",
       "toolbarMutation"
     ]),
-   
+    /**
+     * 初始化基本属性位置&大小
+     */
     initformPane(){
       let div = document.createElement('div');
       div.innerHTML = '名称';
@@ -188,19 +190,12 @@ export default {
                 ],
                 [50, 80, 80]);     
     },
-    /**
-     * 方法说明
-     * @method 方法名
-     * @for 所属类名
-     * @param {参数类型} 参数名 参数说明
-     * @return {返回值类型} 返回值说明
-     */
-    initformPaneEvent(){
-
-    },
-   
-  initTab(){
     
+   /**
+    * 初始化Tab切换页
+    * 
+    */
+  initTab(){    
 // create view
         var div = document.createElement('div');
         // create tab
@@ -220,6 +215,9 @@ export default {
             this.htVars.tabModel.getSelectionModel().setSelection(tab);
         } */
      }, 
+     /**
+      * 初始化图元节点属性列表
+      */
    initProperView(){
          this.htVars.properView.addProperties([{
                     name: 'name',
@@ -232,6 +230,9 @@ export default {
                 }]);
 
    },
+   /**
+    * 初始化创建画布
+    */
     makeGraph() {
         this.htVars.palette = new this.$ht.widget.Palette();
         this.htVars.graphView = window.graph = new this.$ht.graph.GraphView();
@@ -300,6 +301,10 @@ export default {
       this.htVars.htForm.sizeW.setValue(nodeSize.width);
       this.htVars.htForm.sizeH.setValue(nodeSize.height);
     },
+    /**
+     * 
+     * 监听画布图元事件信息
+     */
     handleGraphViewEventListener(){
       this.htVars.graphView.addInteractorListener(function (e) {
           if(e.kind === 'clickData'){
@@ -400,6 +405,11 @@ export default {
           } 
       }.bind(this));
     },
+    /**
+     * 图元拖拽和安放
+     * @param e 事件
+     * @param state 状态
+     */
     handleDragAndDrop(e, state) {
         if (state === 'end') {
             let bound = this.htVars.graphView.getView().getBoundingClientRect(),
@@ -436,6 +446,9 @@ export default {
             }
         }
     },
+    /**
+     * 按类型将图元放入画布之中
+     */
     dropNodebyType(node,paletteNode,lp){
               this.htVars.graphView.dm().add(node);              
               console.log('this.node',this.node);
@@ -444,6 +457,12 @@ export default {
               node.setStyle('shape',paletteNode.getStyle('shape'));
                
     },
+    /**
+     * 创建标准图元节点
+     * @param group 图元节点所属分组
+     * @param model 画布数据模型
+     * 
+     */
     createStandardNode(group,model){
         
           for (var i = 0; i < this.shapes.length; i++) {
@@ -457,17 +476,42 @@ export default {
             } 
             console.log('group is ',group);
     },
+    /**
+     * 创建流动图元节点
+     * @param group 图元节点所属分组
+     * @param model 画布数据模型
+     */
+    createFlowNode(group,model){
+
+    },
+    /**
+     * 创建形状图元节点
+     * @param group 图元节点所属分组
+     * @param model 画布数据模型
+     */
+    createShapeNode(group,model){
+
+    },
+    /**
+     * 初始化图元节点面板模型
+     * @param model 画布数据模型
+     * 
+     */
     initPaletteModel(model) {
       let group = new this.$ht.Group();
       group.setName("节点列表");
       group.setExpanded(true);
-     
-      
       this.createStandardNode(group,model);
+      this.createFlowNode(group,model);
+      this.createShapeNode(group,model);
       model.add(group);
       // model.add(node);
      
     },
+    /**
+     * 绑定window窗口下快捷键
+     * 
+     */
     bindingWindowKey(){
         window.addEventListener("resize", function(e) {
                 mainSplitView.iv();
@@ -483,6 +527,10 @@ export default {
             }
         });
     },
+    /**
+     * 
+     * 获取设备列表
+     */
     getDeviceList(){
         device.getDeviceList({'type':'c8y_MQTTDevice'}).then(res=>{
             if(res.data.managedObjects.length>0){
