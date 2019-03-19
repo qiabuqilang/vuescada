@@ -22,6 +22,7 @@ export default {
  
   data() {
     return {
+      testArr: [1,2,3,4,5],
       showPreview: false,
       toolbarItems: [
         {
@@ -118,12 +119,18 @@ export default {
           positionX: new this.$ht.widget.TextField(),
           positionY: new this.$ht.widget.TextField(),
           sizeW: new this.$ht.widget.TextField(),
-          sizeH: new this.$ht.widget.TextField()
+          sizeH: new this.$ht.widget.TextField(),
+          pipeMin: new this.$ht.widget.TextField(),
+          pipeMax: new this.$ht.widget.TextField()
         },
         typeNodeProperView:'',
         typeFlowProperView:'',
         typePilotProperView:'',
-        typeShapeProperView:''
+        typeShapeProperView:'',
+        typeNodeEventPane:'',
+        typeFlowEventPane:'',
+        typePilotEventPane:'',
+        typeShapeEventPane:''
       },
       splitView: {
         left: "",
@@ -132,14 +139,17 @@ export default {
         down: ""
       },
       view: '',
-      supportedMeasurements: {
-          id: '',
-          name:''
-      },
+      supportedMeasurements: ['id','name'],
+      supportedMeasurementsArr:[],
       node: {
         position: {
           x:'',
           y:''
+        },
+        eventInfo:{
+          varsName: '',
+          min: '',
+          max: ''
         }
       },
       deviceType:'c8y_MQTTDevice'
@@ -173,8 +183,6 @@ export default {
                     {
                     id: 'positionX',
                     element: this.htVars.htForm.positionX
-                  
-
                     },                   
                     {
                         id: 'positionY',
@@ -194,6 +202,42 @@ export default {
                     }
                 ],
                 [50, 80, 80]);     
+    },
+    /**
+     * 初始化事件面板
+     * 
+     */
+    initEventFormPane(){
+      setTimeout(() => {
+      let div = document.createElement('div');
+      div.className = 'eventFormPane';
+      let select = document.createElement('select');
+     let option = document.createElement('option');
+     option.innerHTML = '请选择变量';
+     select.appendChild(option);   
+     let supportedMeasurements = this.supportedMeasurements;
+     Array.prototype.forEach.call(Object.values(supportedMeasurements),function(item){
+       option = document.createElement('option');
+       option.innerHTML = item;
+       select.appendChild(option);
+       option = '';
+       
+     });
+      div.appendChild(select);
+      this.htVars.typeNodeEventPane.addRow([div],[100,100]);
+      this.htVars.typeNodeEventPane.addRow(['动态',{
+        id:'max',
+        element: this.htVars.htForm.pipeMax
+      }],[100,100]);
+      this.htVars.typeNodeEventPane.addRow([
+        '静态',
+        {
+          id: 'min',
+          element: this.htVars.htForm.pipeMin
+        }
+      ],[100,100])
+      }, 500);
+      
     },
     
    /**
@@ -217,16 +261,14 @@ export default {
           
           case 'pipe':
           properTab.setView(this.htVars.typeFlowProperView);
-          eventTab.setView(div);
+          eventTab.setView(this.htVars.typeNodeEventPane);
           break;
         }
         // add to model
         let tabModel = this.htVars.tabView.getTabModel();
         tabModel.clear();
-      
         tabModel.add(properTab);
         tabModel.add(eventTab);
-      
         tabModel.getSelectionModel().setSelection(properTab);
         
      }, 
@@ -342,6 +384,8 @@ export default {
         this.htVars.typeFlowProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typeShapeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typePilotProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typeNodeEventPane = new this.$ht.widget.FormPane();
+        
         
         let leftSplitView = new this.$ht.widget.SplitView(this.htVars.formPane,this.htVars.tabView,'v',.3);
         let splitView = new this.$ht.widget.SplitView(this.htVars.palette, this.htVars.graphView, "h", .2),
@@ -351,6 +395,7 @@ export default {
            
           
         this.initformPane();
+        this.initEventFormPane();
         this.initProperView();
         this.initTab();
         
@@ -682,8 +727,10 @@ export default {
                 device. getSupportedMeasurements(166143,'').then(res=>{
                    if(res.data.c8y_SupportedSeries.length>0){
                     //    this.supportedMeasurements = res.data.c8y_SupportedSeries;
-                       this.supportedMeasurements = {...res.data.c8y_SupportedSeries,...this.supportedMeasurements}
-                       console.log(this.supportedMeasurements);
+                     res.data.c8y_SupportedSeries.map(item=>{
+                      
+                       this.supportedMeasurements.push(item);
+                     })
                    }
                 })
             }
