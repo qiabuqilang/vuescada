@@ -3,6 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const webpack = require('webpack')
 
 
 function resolve (dir) {
@@ -38,7 +39,8 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'utils':resolve('src/utils'),
-      'lib': resolve('lib')
+      'lib': resolve('lib'),
+      'public': resolve('public')
     }
   },
   module: {
@@ -65,9 +67,9 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-            "style-loader", // 将 JS 字符串生成为 style 节点
-            "css-loader", // 将 CSS 转化成 CommonJS 模块
-            "sass-loader" // 将 Sass 编译成 CSS，默认使用 Node Sass
+            "style-loader", 
+            "css-loader", 
+            "sass-loader" 
         ],
         include: [resolve('src')]
     },
@@ -94,10 +96,17 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      }
+      },
      
-    ]
+    ],
+    
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      jquery: 'jquery',
+      $: 'jquery'
+    })
+  ],
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
     // source contains it (although only uses it if it's native).

@@ -20,12 +20,13 @@ import 'lib/plugin/ht-autolayout';
 import 'lib/plugin/ht-dialog';
 import 'lib/plugin/ht-htmlnode';
 import 'lib/plugin/ht-panel';
-
 // ht------------
+import $ from 'jquery';
 import mixins from '@/mixins';
 import store from './store';
 import App from './App';
 import router from './router';
+import '../static/scss/public.scss';
 
 Vue.use(ElementUI);
 Vue.mixin(mixins);

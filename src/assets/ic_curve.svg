@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_curve</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+        <g id="04圆形矩形选择" transform="translate(-107.000000, -190.000000)" stroke="#333333" stroke-width="2">
+            <g id="左侧栏" transform="translate(0.000000, 120.000000)">
+                <g id="分组-14" transform="translate(107.000000, 70.000000)">
+                    <g id="分组-2">
+                        <g id="ic/curve" transform="translate(0.000000, -0.000000)">
+                            <path d="M2,20.748267 C6.38063592,15.8353489 12.3806359,15.7520156 20,20.498267 C27.6193641,25.2445184 33.6193641,25.1611851 38,20.248267" id="直线"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_triangle</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="04圆形矩形选择" transform="translate(-34.000000, -272.000000)" stroke="#333333" stroke-width="2">
+            <g id="左侧栏" transform="translate(0.000000, 120.000000)">
+                <g id="分组-13-copy" transform="translate(33.000000, 152.000000)">
+                    <g id="分组-4" transform="translate(1.000000, 0.000000)">
+                        <g id="ic/triangle">
+                            <path d="M20,7.84925744 L3.8316655,33 L36.1683345,33 L20,7.84925744 Z" id="三角形"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

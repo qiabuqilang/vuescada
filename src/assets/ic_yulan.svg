@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_yulan</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="04圆形矩形选择" transform="translate(-1234.000000, -20.000000)">
+            <g id="矩形">
+                <g id="分组" transform="translate(1226.000000, 16.000000)">
+                    <g id="ic/yulan" transform="translate(8.000000, 4.000000)">
+                        <path d="M8.55552469,6.7682334 L13.1541369,9.83397485 C13.3839012,9.98715108 13.4459882,10.2975858 13.2928119,10.5273501 C13.2561945,10.5822762 13.209063,10.6294077 13.1541369,10.6660251 L8.55552469,13.7317666 C8.32576035,13.8849428 8.01532568,13.8228559 7.86214945,13.5930916 C7.80739361,13.5109578 7.77817459,13.4144539 7.77817459,13.3157415 L7.77817459,7.18425855 C7.77817459,6.90811617 8.00203222,6.68425855 8.27817459,6.68425855 C8.37688709,6.68425855 8.47339093,6.71347756 8.55552469,6.7682334 Z" id="矩形" fill="#91A5FF"></path>
+                        <circle id="椭圆形" stroke="#91A5FF" stroke-width="2" cx="10" cy="10" r="7"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

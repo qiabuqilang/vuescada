@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="31px" height="31px" viewBox="0 0 31 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_suoxiao</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="04圆形矩形选择" transform="translate(-247.000000, -75.000000)" fill="#666666">
+            <g id="工具栏" transform="translate(0.000000, 60.000000)">
+                <g id="分组-20" transform="translate(241.500000, 10.000000)">
+                    <g id="分组-4" transform="translate(5.000000, 4.000000)">
+                        <g id="分组-6" transform="translate(0.000000, 0.500000)">
+                            <g id="ic/suoxiao" transform="translate(0.400000, 0.800000)">
+                                <path d="M16.2,26.4 C10.0144108,26.4 5,21.3855892 5,15.2 C5,9.0144108 10.0144108,4 16.2,4 C22.3855892,4 27.4,9.0144108 27.4,15.2 C27.4,21.3855892 22.3855892,26.4 16.2,26.4 Z M10.6,14.08 L10.6,16.32 L21.8,16.32 L21.8,14.08 L10.6,14.08 Z" id="合并形状"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

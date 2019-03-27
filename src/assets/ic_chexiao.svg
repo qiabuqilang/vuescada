@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_chexiao</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="04圆形矩形选择" transform="translate(-50.000000, -75.000000)" fill="#666666" fill-rule="nonzero">
+            <g id="工具栏" transform="translate(0.000000, 60.000000)">
+                <g id="ic/chexiao" transform="translate(45.000000, 10.000000)">
+                    <g id="分组-5" transform="translate(5.000000, 5.000000)">
+                        <path d="M12.0753066,9.34014945 L12.0753066,4.5 L2.5,13.0813108 L12.0753066,21.6644613 L12.0753066,16.4741985 C14.7355984,16.4741985 22.9534467,16.4741985 26.5,24.5 L26.5,23.6082183 C26.5,20.0412084 22.9529442,8.5807626 12.0753066,9.34014945 Z" id="路径"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

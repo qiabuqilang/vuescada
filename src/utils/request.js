@@ -10,12 +10,11 @@ Message({
 const serviceConfig = tcy8 ? {
   baseURL: process.env.BASE_API,
   timeout: 5000,
-  headers: {
-                     
+  headers: {                     
     'Content-Type': ' application/json',
     Accept: ' application/json',
-    Authorization: `Basic ${tcy8}`,
-    
+    Authorization: `Basic ${tcy8}`,  
+      
   },  
 } : {
   baseURL: process.env.BASE_API,

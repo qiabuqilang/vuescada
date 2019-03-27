@@ -5,8 +5,9 @@
       :visible.sync="showPreview"
      fullscreen append-to-body center
       >
-      <div class="showPreview" ref="showPreview"></div>
+      <div class="showPreview" ref="showPreview"></div>      
     </el-dialog>
+   <!-- <textarea name="" id="testText" cols="30" rows="10">sadfasdfasfasdf</textarea> -->
     </div>
 </template>
 <script>
@@ -24,86 +25,9 @@ export default {
     return {
       testArr: [1,2,3,4,5],
       showPreview: false,
-      toolbarItems: [
-        {
-          icon: "zoomIn",
-          label: "放大",
-          action: function() {
-              console.log(this);
-            this.htVars.graphView.zoomIn(true);
-          }.bind(this)
-        },
-        {
-          icon: "zoomOut",
-          label: "缩小",
-          action: function() {
-            this.htVars.graphView.zoomOut(true);
-          }.bind(this)
-        },
-        {
-          icon: "fitContent",
-          label: "适应",
-          action: function() {
-            this.htVars.graphView.fitContent(true);
-          }.bind(this)
-        },
-        
-        "separator",
-        {
-          label: "预览",
-          action: function() {          
-             this.showPreview = true;
-              setTimeout(()=>{
-                let dataModel = new ht.DataModel(),
-                graphView = new ht.graph.GraphView(dataModel),
-                view = graphView.getView();
-                this.viewStyle(view);
-                this.$refs.showPreview.appendChild(view);
-             
-                dataModel.deserialize(this.htVars.dataModel.serialize());
-                graphView.enableFlow();
-                graphView.enableDashFlow();
-                graphView.setDisabled(true);
-           
-              },1000)
-          
-          }.bind(this)
-        },
-        {
-          label: "保存",
-          action: function() {
-            console.log(scada);
-            let data = { 
-              type:'saveScada',
-              scadaString: JSON.stringify(this.htVars.dataModel.serialize()),
-              deviceType: this.deviceType
-              }
-            scada.saveScada('/inventory/managedObjects','',data).then(res=>{
-              console.log(res);
-              if(res.data.id>0){
-                Message({
-                  message: '保存成功',
-                  type: 'success'
-                })
-              }else{
-                Message({
-                  message: '保存失败',
-                  type: 'error'
-                })
-              }
-            })
-          }.bind(this)
-        },
-        {
-          label: "真实使用",
-          action: function() {
-            this.$router.push({
-              path: '/preview'
-            })
-          }.bind(this)
-        }
-      ],
-      shapes : ['rect', 'circle', 'oval', 'roundRect', 'star', 'triangle', 'hexagon', 'pentagon', 'diamond', 'rightTriangle', 'parallelogram', 'trapezoid'],
+      testHtmlNode: new ht.HtmlNode(),     
+      standardNode : [{name:'矩形',style:'rect',icon: 'ic_rectangle.svg'}, {name:'圆形',style:'circle',icon:'ic_circle.svg'}, {name:'三角形',style:'triangle',icon:'ic_triangle.svg'}, {name:'多边形',style:'hexagon',icon: 'ic_polygon.svg'}],
+      lineNode:[{name:'直线',icon:'ic_line.svg',lineType:'straight'},{name:'曲线',icon:'ic_curve.svg',lineType:'curve'}],
       htVars: {
         palette: "",
         graphView: "",
@@ -115,6 +39,7 @@ export default {
         historyManager: "",
         tabViewEvent:'',
         tabViewProperty: '',
+        clickNode: '',
         htForm: {
           positionX: new this.$ht.widget.TextField(),
           positionY: new this.$ht.widget.TextField(),
@@ -124,10 +49,13 @@ export default {
           pipeMax: new this.$ht.widget.TextField()
         },
         typeNodeProperView:'',
-        typeFlowProperView:'',
+        typePipeProperView:'',
         typePilotProperView:'',
         typeShapeProperView:'',
-        typeNodeEventPane:'',
+        typeTextProperView: '',
+        typeLineProperView:'',        
+        typeTextEventPane:'',
+        typePipeEventPane:'',
         typeFlowEventPane:'',
         typePilotEventPane:'',
         typeShapeEventPane:''
@@ -224,18 +152,22 @@ export default {
        
      });
       div.appendChild(select);
-      this.htVars.typeNodeEventPane.addRow([div],[100,100]);
-      this.htVars.typeNodeEventPane.addRow(['动态',{
+      //管道事件
+      this.htVars.typePipeEventPane.addRow([div],[100,100]);
+      this.htVars.typePipeEventPane.addRow(['动态',{
         id:'max',
         element: this.htVars.htForm.pipeMax
       }],[100,100]);
-      this.htVars.typeNodeEventPane.addRow([
+      this.htVars.typePipeEventPane.addRow([
         '静态',
         {
           id: 'min',
           element: this.htVars.htForm.pipeMin
         }
       ],[100,100])
+
+      //水管事件
+      this.htVars.typeTextEventPane.addRow([div],[100,100]);
       }, 500);
       
     },
@@ -258,10 +190,17 @@ export default {
           properTab.setView(this.htVars.typeNodeProperView);
           eventTab.setView(div);
           break;
-          
           case 'pipe':
-          properTab.setView(this.htVars.typeFlowProperView);
-          eventTab.setView(this.htVars.typeNodeEventPane);
+          properTab.setView(this.htVars.typePipeProperView);
+          eventTab.setView(this.htVars.typePipeEventPane);
+          break;
+          case 'text':
+          properTab.setView(this.htVars.typeTextProperView);
+          eventTab.setView(this.htVars.typeTextEventPane);
+          break;
+          case 'line':
+          properTab.setView(this.htVars.typeLineProperView);
+          eventTab.setView(div);
           break;
         }
         // add to model
@@ -287,7 +226,7 @@ export default {
       * 
       */
    initProperView(){
-     //初始化普通节点属性
+        //初始化普通节点属性
         this.htVars.typeNodeProperView.addProperties([         
           {
             name: 'shape.background',
@@ -323,49 +262,205 @@ export default {
           }
          ]);
          
-        //  初始化流动节点属性
-         this.htVars.typeFlowProperView.addProperties([
-           {
-             name: 'shape.border.width',
-             displayName:'管径（px）',
-             accessType: 'style',
-             editable: true,
-             valueType: 'number'
+        //  初始化管道节点属性
+        this.htVars.typePipeProperView.addProperties([
+          {
+            name: 'shape.border.width',
+            displayName:'管径（px）',
+            accessType: 'style',
+            editable: true,
+            valueType: 'number'
 
-           },
+          },
+          {
+            name: 'shape.border.color',
+            displayName:'颜色',
+            accessType: 'style',
+            editable: true,
+            valueType: 'color'
+          },          
+          {
+            name: 'shape.dash.width',
+            displayName:'块宽',
+            accessType: 'style',
+            editable: true,
+            valueType: 'number',
+              getPropertyName(property){
+              console.log('属性为',property)
+            }
+
+          },
+          {            
+            editable: true,
+            displayName:'块长',            
+            valueType: 'number',
+            value: '',
+            getValue: function(data, property, value,view){
+              console.log('getValue is',data, property, value,view);
+              return data.getStyle('shape.dash.pattern')[0];
+            },
+            setValue: function(data, property, value, view){
+              console.log('setValue is',data, property, value, view);
+              return data.setStyle('shape.dash.pattern',[value,data.getStyle('shape.dash.pattern')[1]])
+                      
+            },
+          },
+          {
+            displayName: '块间距',
+            valueType: 'number',
+            value:'',
+            editable: true,
+          getValue: function(data, property, value,view){
+              console.log('getValue is',data, property, value,view);
+              return data.getStyle('shape.dash.pattern')[1];
+            },
+            setValue: function(data, property, value, view){
+              console.log('setValue is',data, property, value, view);
+              return data.setStyle('shape.dash.pattern',[data.getStyle('shape.dash.pattern')[0],value])
+                      
+            },
+          },
+          {
+            name: 'shape.dash.color',
+            displayName:'颜色',
+            accessType: 'style',
+            editable: true,
+            valueType: 'color'
+          },
+          {
+            name: 'shape.dash.flow.reverse',
+            displayName: '流向',
+            editable: true,
+            accessType: 'style',        
+            value: false,
+            enum:{values:[false,true], labels:['正向','反向']}
+          }
+
+        
+        ]);
+        let fontSizeArr = [];
+        for(let i = 12;i<=72;i++){
+          fontSizeArr.push(i);
+        }
+         //初始化文本属性
+         this.htVars.typeTextProperView.addProperties([
+          {
+            name: 'fontSize',
+            editable: true,
+            displayName:'文本字号',
+            value:14,
+            accessType: 'style',
+            enum:{values:fontSizeArr},
+            getValue: function(data, property, value,view){
+              let dom = $(data.getHtml())[0];             
+              console.log('getValue is',data, property, value,view,data.getHtml(),dom.style.fontSize,$('#text').val());              
+              return dom.style.fontSize;
+             
+            }.bind(this),
+             setValue: function(data,property,value,view){            
+                 let dom = document.getElementById('text');                          
+              console.log(dom,dom.style.fontSize);
+              dom.style.fontSize = `${value}px`;
+              data.setHtml();
+              return data.setHtml(dom); 
+             }
+            },
             {
-             name: 'shape.border.color',
-             displayName:'颜色',
-             accessType: 'style',
-             editable: true,
-             valueType: 'color'
-           },          
-           {
-             name: 'shape.dash.width',
-             displayName:'块宽',
-             accessType: 'style',
-             editable: true,
-             valueType: 'number'
-           },
-           {
-             name: 'shape.dash.pattern',
-             displayName:'块长',
-             accessType:'style',
+              displayName: '字体颜色',
+              valueType: 'color',
+              editable: true,
+               getValue: function(data, property, value,view){
+              let dom = $(data.getHtml())[0]; 
+              return dom.style.color;
+            }.bind(this),
+               setValue: function(data,property,value,view){  
+                 console.log('color is',value);
+                 let dom = document.getElementById('text');
+                 dom.style.color = value;
+              data.setHtml();
+              return data.setHtml(dom); 
+             }
+            },
+            {
+              displayName:'是否加粗',
+              valueType: 'boolean',
+              editable: true,
+               getValue: function(data, property, value,view){
+              let dom = $(data.getHtml())[0];             
+              console.log('getValue is',data, property, value,view,data.getHtml(),dom.style.fontSize,$('#text').val());              
+              return dom.style.fontWeight==='bold'?true: false;
+            }.bind(this),
+               setValue: function(data,property,value,view){            
+                 let dom = document.getElementById('text');
+                 if(value){
+                   dom.style.fontWeight = 'bold';
+                 }else{
+                   dom.style.fontWeight = 'normal';
+                 }
+              data.setHtml();
+              return data.setHtml(dom); 
+             }
+            },
+            {
+              displayName:'是否倾斜',
+              valueType: 'boolean',
+              editable: true,               
+               getValue: function(data, property, value,view){
+              let dom = $(data.getHtml())[0]; 
+              return dom.style.fontStyle==='italic'?true: false;
+            },
+              setValue: function(data,property,value,view){            
+                 let dom = document.getElementById('text');
+                 if(value){
+                   dom.style.fontStyle = 'italic';
+                 }else{
+                   dom.style.fontStyle = 'normal';
+                 }
+              data.setHtml();
+              return data.setHtml(dom); 
+             }
+            },
+             {
+              displayName:'是否下划线',
+              valueType: 'boolean',
+              editable: true,               
+               getValue: function(data, property, value,view){
+              let dom = $(data.getHtml())[0]; 
+              return dom.style.textDecoration==='underline'?true: false;
+            },
+              setValue: function(data,property,value,view){            
+                 let dom = document.getElementById('text');
+                 if(value){
+                   dom.style.textDecoration = 'underline';
+                 }else{
+                   dom.style.textDecoration = 'none';
+                 }
+              data.setHtml();
+              return data.setHtml(dom); 
+             }
+            },
+
            
-             valueType: 'Array'
-
-           },
-            {
-             name: 'shape.dash.color',
-             displayName:'颜色',
-             accessType: 'style',
-             editable: true,
-             valueType: 'color'
-           }
-
-          
          ])
 
+         //初始化线性属性
+         this.htVars.typeLineProperView.addProperties([
+           {
+             name:'shape.border.color',
+             displayName:"颜色",
+             valueType:'color',
+             accessType:'style',
+             editable: true
+           },
+           {
+            name: 'shape.border.width',
+            displayName:'粗细',
+            accessType: 'style',
+            editable: true,
+            valueType: 'number',
+           
+          },
+         ])
    },
    /**
     * 初始化创建画布
@@ -381,12 +476,13 @@ export default {
         this.htVars.tabView = new this.$ht.widget.TabView();
         this.htVars.formPaneEvent =new this.$ht.widget.FormPane();
         this.htVars.typeNodeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typeFlowProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typePipeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typeTextProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typeLineProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typeShapeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typePilotProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typeNodeEventPane = new this.$ht.widget.FormPane();
-        
-        
+        this.htVars.typePipeEventPane = new this.$ht.widget.FormPane();
+        this.htVars.typeTextEventPane = new this.$ht.widget.FormPane();
         let leftSplitView = new this.$ht.widget.SplitView(this.htVars.formPane,this.htVars.tabView,'v',.3);
         let splitView = new this.$ht.widget.SplitView(this.htVars.palette, this.htVars.graphView, "h", .2),
         mainSplitView = new this.$ht.widget.SplitView(splitView, leftSplitView, 'h', -300),
@@ -398,12 +494,12 @@ export default {
         this.initEventFormPane();
         this.initProperView();
         this.initTab();
+        this.initPaletteModel(this.htVars.palette.dm());
         
       //  this.htVars.accordionView.add('属性列表',this.htVars.properView,true);
         this.htVars.accordionView.add('',this.htVars.formPane,true);
         this.view = upSplitView.getView();
-        let style = this.view.style;
-        this.initPaletteModel(this.htVars.palette.dm());
+        let style = this.view.style;        
         this.htVars.historyManager.clear();
         // this.htVars.graphView.setEditable(true);
         var editInteractor = new ht.graph.XEditInteractor(this.htVars.graphView);
@@ -415,7 +511,15 @@ export default {
             new ht.graph.DefaultInteractor(this.htVars.graphView),
             new ht.graph.TouchInteractor(this.htVars.graphView , {editable: false})//禁用Touch上默认的编辑功能
         ]));
-                  
+      
+        this.htVars.graphView.setEditableFunc(function(data) {  
+            if(data.__proto__ === this.testHtmlNode.__proto__){
+                return false
+            }else{
+                return true;
+            }
+            
+        }.bind(this));      
           
         this.htVars.palette.handleDragAndDrop = this.handleDragAndDrop;
         /*  style.position = "absolute";
@@ -430,126 +534,7 @@ export default {
       this.handleGraphViewEventListener()     ;
     },
     
-    /**
-     * 
-     * 处理图元节点单击
-     * @params node 图元节点
-     * @params e 事件
-     */
-    handleClickNode(node,e){
-      let nodeSize = node.getSize();     
-      let nodePosition = this.htVars.graphView.lp(e);
-      console.log('Node position is ',nodePosition,'nodeType is',node.getStyle('nodeType'));
-      this.htVars.htForm.positionX.setValue(nodePosition.x);      
-      this.htVars.htForm.positionY.setValue(nodePosition.y);
-      this.htVars.htForm.sizeW.setValue(nodeSize.width);
-      this.htVars.htForm.sizeH.setValue(nodeSize.height);
-       this.initTab(node.s('nodeType'));
-    },
-    /**
-     * 
-     * 监听画布图元事件信息
-     */
-    handleGraphViewEventListener(){
-      this.htVars.graphView.addInteractorListener(function (e) {
-          if(e.kind === 'clickData'){
-              console.log(e.data + '被单击',e,'e.size',e.data.getSize());
-              console.log(ht.widget.TextField);             
-              this.handleClickNode(e.data,e.event);
-             
-          }
-          else if(e.kind === 'doubleClickData'){
-              console.log(e.data + '被双击');
-          }            
-          else if(e.kind === 'clickBackground'){
-              console.log('单击背景');
-          }  
-          else if(e.kind === 'doubleClickBackground'){
-              console.log('双击背景');
-          }     
-          else if(e.kind === 'beginRectSelect'){
-              console.log('开始框选图元');
-          }              
-          else if(e.kind === 'betweenRectSelect'){
-              console.log('正在框选图元');
-          }             
-          else if(e.kind === 'endRectSelect'){
-              console.log('结束框选图元');
-          }           
-          else if(e.kind === 'beginMove'){
-              console.log('开始移动图元');
-          }              
-          else if(e.kind === 'betweenMove'){          
-              console.log('正在移动图元');
-          }             
-          else if(e.kind === 'endMove'){
-              console.log('结束移动图元');
-          } 
-          else if(e.kind === 'beginPan'){
-              console.log('开始手抓图平移');
-          }              
-          else if(e.kind === 'betweenPan'){
-              console.log('正在手抓图平移');
-          }             
-          else if(e.kind === 'endPan'){
-              console.log('结束手抓图平移');
-          }     
-          else if(e.kind === 'beginEditRect'){
-              console.log('开始编辑图元大小和位置');
-          }              
-          else if(e.kind === 'betweenEditRect'){
-              console.log('正在编辑图元大小和位置');
-          }             
-          else if(e.kind === 'endEditRect'){
-              console.log('结束编辑图元大小和位置');
-          } 
-          else if(e.kind === 'beginEditPoint'){
-              console.log('开始编辑多边形Shape或多点Edge的具体点');
-          }              
-          else if(e.kind === 'betweenEditPoint'){
-              console.log('正在编辑多边形Shape或多点Edge的具体点');
-          }             
-          else if(e.kind === 'endEditPoint'){
-              console.log('结束编辑多边形Shape或多点Edge的具体点');
-          } 
-          else if(e.kind === 'beginEditRotation'){
-              console.log('开始旋转图元');
-          }              
-          else if(e.kind === 'betweenEditRotation'){
-              console.log('正在旋转图元');
-          }             
-          else if(e.kind === 'endEditRotation'){
-              console.log('结束旋转图元');
-          }               
-          else if(e.kind === 'moveLeft'){
-              console.log('左方向键左移图元一个像素');
-          }       
-          else if(e.kind === 'moveRight'){
-              console.log('右方向键右移图元一个像素');
-          } 
-          else if(e.kind === 'moveUp'){
-              console.log('上方向键上移图元一个像素');
-          } 
-          else if(e.kind === 'moveDown'){
-              console.log('下方向键下移图元一个像素');
-          } 
-          else if(e.kind === 'toggleNote'){
-              console.log('切换note标注的展开合并');
-          }             
-          else if(e.kind === 'toggleNote2'){
-              console.log('切换note2标注的展开合并');
-          }
-          else if(e.kind === 'beginEditPoints'){
-              console.log('开始进入曲线的点编辑状态');
-          }
-          else if(e.kind === 'endEditPoints'){
-              console.log('结束曲线的点编辑状态');
-          } 
-          else if(e.kind === 'hover'){
-              console.log('鼠标停留');
-          } 
-      }.bind(this));
-    },
+
     /**
      * 图元拖拽和安放
      * @param e 事件
@@ -578,20 +563,69 @@ export default {
                 switch(paletteNode.s('nodeType')){
                   case 'node':
                     node = new this.$ht.Node();
-                    this.dropNodebyType(node,paletteNode,lp);
+                    node.setStyle('shape.background',null);
+                    node.setStyle('shape.border.color','#000');
+                    node.setStyle('shape.border.width','2');
+                    node.setImage(paletteNode.getImage());
+                    node.setStyle('shape',paletteNode.getStyle('shape'));                   
                   break;
                   case 'pipe':
-                    node = this.createPipeNode(lp);
-                    this.dropNodebyType(node,paletteNode,lp);
+                    node = this.createPipeNode(lp);                  
+                  break;
+                  case 'text':
+                    node = this.createTextNode(lp);
+                  break;
+                  case 'line':
+                    node = this.createLineNode(paletteNode.s('lineType'),lp);
                   break;
                   case 'state':
                   break;
                   case 'pilot':
                   break;
                 }
+                this.dropNodebyType(node,paletteNode,lp);
               this.htVars.historyManager.endTransaction();
             }
         }
+    },
+    createLineNode(type,lp){
+      let line = new ht.Shape();
+      line.s("shape.border.width", 3);
+      line.s("shape.background", null); 
+      line.s("shape.border.color", "#000");     
+      switch(type){
+        case 'straight':
+        line.setPoints(new ht.List([
+          {x:0,y:0},
+          {x:200,y:0}
+        ]));
+        line.setSegments(new ht.List([
+            1, // moveTo
+            2
+        ])); 
+        break;
+        default:
+        line.setPoints(new ht.List([
+          {x:0,y:0},
+          {x:50,y:50},
+          {x:100,y:0},
+          {x:150,y:-50},
+          {x:200,y:0},
+
+        ]));
+        line.setSegments(new ht.List([
+          1,3,3
+        ]))
+        break;
+      }
+      line.translate(lp.x,lp.y);
+      return line;
+    },
+    createTextNode(lp){
+      let node = new this.$ht.HtmlNode();      
+      node.setPosition(lp.x,lp.y);
+      node.setHtml(`<textarea name="" id="text" cols="30" rows="10" style="border: 1px solid #000;font-size:14px;" }></textarea>`);
+      return node;
     },
     createPipeNode(lp){
         let pipe = new ht.Shape();      
@@ -601,8 +635,8 @@ export default {
         pipe.s("shape.dash.flow", true);
         pipe.s('shape.dash.width',10);
         pipe.s("shape.dash.color", "yellow");
-        pipe.setStyle("shape.border.color", "#000");  
-       
+        pipe.s("shape.dash.flow.reverse",false);
+        pipe.setStyle("shape.border.color", "#000");         
         pipe.setPoints(new ht.List([
                     {
                         x: 0,
@@ -621,9 +655,6 @@ export default {
             1, // moveTo
             2, // quadraticCurveTo
             2,
-           
-           
-           
         ])); 
         pipe.translate(lp.x, lp.y);
         return pipe;
@@ -632,11 +663,9 @@ export default {
      * 按类型将图元放入画布之中
      */
     dropNodebyType(node,paletteNode,lp){
-              this.htVars.graphView.dm().add(node);              
-              console.log('this.node',this.node);
-              node.setPosition(lp.x, lp.y);
-              node.setImage(paletteNode.getImage());
-              node.setStyle('shape',paletteNode.getStyle('shape'));
+      console.log('弄得is',node);
+              this.htVars.graphView.dm().add(node);
+              node.setPosition(lp.x, lp.y);             
               node.setStyle('nodeType',paletteNode.getStyle('nodeType'));
                
     },
@@ -646,28 +675,31 @@ export default {
      * @param model 画布数据模型
      * 
      */
-    createStandardNode(group,model){
-        
-          for (let i = 0; i < this.shapes.length; i++) {
+    createPaletteStandardNode(group,model){
+        //  console.log(require(''+this.testNodeImg));
+          for (let i = 0; i < this.standardNode.length; i++) {
                 let node = new ht.Node();
-                node.setName(this.shapes[i]);
-                node.setStyle('shape', this.shapes[i]); 
+                let icon = this.standardNode[i].icon;               
+                node.setName(this.standardNode[i].name);             
+                node.setStyle('shape', this.standardNode[i].style); 
+                // node.setImage(require('@/assets/ic_polygon.svg'));
+                node.setStyle('background',null);
+                node.setImage(require(`@/assets/${icon}`)); 
                 node.setStyle('draggable',true);
                 node.setStyle('nodeType','node');
                 group.addChild(node);
                 model.add(node);
-            } 
-            console.log('group is ',group);
+            }            
     },
     /**
-     * 创建流动图元节点
+     * 创建管道图元节点
      * @param group 图元节点所属分组
      * @param model 画布数据模型
      */
-    createFlowNode(group,model){
-       let node = new ht.Node();
+    createPalettePipeNode(group,model){
+       let node = new this.$ht.Node();
         node.setName('管道');
-       
+        node.setImage(require('@/assets/ic_guandao.svg'));
         node.setStyle('draggable',true);
         node.setStyle('nodeType','pipe');
         group.addChild(node);
@@ -678,8 +710,41 @@ export default {
      * @param group 图元节点所属分组
      * @param model 画布数据模型
      */
-    createShapeNode(group,model){
+    createPaletteShapeNode(group,model){
 
+    },
+    /**
+     * 
+     * 创建文本图元节点
+     */
+    createPaletteTextNode(group,model){     
+        let node = new this.$ht.Node();      
+        node.setName('文本');
+        node.setImage(require('@/assets/ic_text.svg'));
+        node.setStyle('draggable',true);
+        node.setStyle('nodeType','text');
+        group.addChild(node);
+        model.add(node);
+
+    },
+    /**
+     * 
+     * 创建线&曲线图元节点
+     */
+    createPaletteLineNode(group,model){
+      
+      this.lineNode.map(item=>{
+        console.log(item);
+        let node = new ht.Node();
+        node.setName(item.name);
+        node.setImage(require(`@/assets/${item.icon}`));
+        node.setStyle('draggable',true);
+        node.setStyle('nodeType','line');
+        node.setStyle('lineType',item.lineType);
+        group.addChild(node);
+        model.add(node);
+      })
+     
     },
     /**
      * 初始化图元节点面板模型
@@ -688,13 +753,15 @@ export default {
      */
     initPaletteModel(model) {
       let group = new this.$ht.Group();
-      group.setName("节点列表");
+      group.setName("标准控件");
       group.setExpanded(true);
-      this.createStandardNode(group,model);
-      this.createFlowNode(group,model);
-      this.createShapeNode(group,model);
+      console.log('group',group,model);
+      this.createPaletteLineNode(group,model);
+      this.createPaletteTextNode(group,model);
+      this.createPaletteStandardNode(group,model);
+      this.createPalettePipeNode(group,model);
+      this.createPaletteShapeNode(group,model);     
       model.add(group);
-      // model.add(node);
      
     },
     /**
@@ -743,7 +810,7 @@ export default {
     this.makeGraph();
   },
   mounted() {
-      this.$refs.htbox.appendChild(this.view);
+      this.$refs.htbox.appendChild(this.view);     
       const that = this;
         window.onresize = function(){
             console.log(document.body.clientWidth,document.body.clientHeight);
@@ -756,5 +823,6 @@ export default {
 };
 </script>
 <style scoped lang='scss'>
-
+.htbox{
+}
 </style>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_guandao</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="04圆形矩形选择" transform="translate(-34.000000, -354.000000)">
+            <g id="左侧栏" transform="translate(0.000000, 120.000000)">
+                <g id="分组-13-copy-2" transform="translate(34.000000, 234.000000)">
+                    <g id="ic/guandao">
+                        <rect id="矩形" stroke="#617EFE" fill-opacity="0" fill="#617FF7" opacity="0" x="0.5" y="0.5" width="39" height="39"></rect>
+                        <g id="分组-17" transform="translate(3.000000, 4.000000)">
+                            <path d="M34,32 L20,32 C10.0588745,32 2,23.9411255 2,14 L2,0 M12,0 L12,14 C12,18.418278 15.581722,22 20,22 L34,22 L34,22" id="形状" stroke="#333333" stroke-width="2" fill-rule="nonzero"></path>
+                            <rect id="矩形" fill="#333333" x="32" y="32" width="2" height="2"></rect>
+                            <rect id="矩形-copy-128" fill="#333333" x="32" y="20" width="2" height="2"></rect>
+                            <rect id="矩形-copy-130" fill="#333333" transform="translate(1.000000, 1.000000) rotate(-270.000000) translate(-1.000000, -1.000000) " x="-1.13686838e-13" y="0" width="2" height="2"></rect>
+                            <rect id="矩形-copy-129" fill="#333333" transform="translate(13.000000, 1.000000) rotate(-270.000000) translate(-13.000000, -1.000000) " x="12" y="0" width="2" height="2"></rect>
+                            <path d="M34,27 L20,27 C12.8202983,27 7,21.1797017 7,14 L7,0" id="路径-copy-2" stroke="#617EFE" stroke-width="4" stroke-dasharray="5"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

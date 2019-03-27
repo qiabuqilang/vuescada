@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_qianjin</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="04圆形矩形选择" transform="translate(-116.000000, -75.000000)" fill="#666666" fill-rule="nonzero">
+            <g id="工具栏" transform="translate(0.000000, 60.000000)">
+                <g id="ic/qianjin" transform="translate(110.500000, 10.000000)">
+                    <g id="分组-2" transform="translate(5.500000, 5.000000)">
+                        <path d="M16.1246934,8.34014945 L16.1246934,3.5 L25.7,12.0813108 L16.1246934,20.6644613 L16.1246934,15.4741985 C13.4644016,15.4741985 5.24655327,15.4741985 1.7,23.5 L1.7,22.6082183 C1.7,19.0412084 5.24705576,7.5807626 16.1246934,8.34014945 Z" id="路径"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
