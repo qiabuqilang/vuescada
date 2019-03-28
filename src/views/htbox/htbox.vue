@@ -46,14 +46,18 @@ export default {
           sizeW: new this.$ht.widget.TextField(),
           sizeH: new this.$ht.widget.TextField(),
           pipeMin: new this.$ht.widget.TextField(),
-          pipeMax: new this.$ht.widget.TextField()
+          pipeMax: new this.$ht.widget.TextField(),
+          maxYezhu: new this.$ht.widget.TextField(),
+          minYezhu: new this.$ht.widget.TextField()
         },
         typeNodeProperView:'',
         typePipeProperView:'',
         typePilotProperView:'',
         typeShapeProperView:'',
         typeTextProperView: '',
-        typeLineProperView:'',        
+        typeLineProperView:'',
+        typeYezhuProperView:'',
+        typeYezhuEventPane:'',
         typeTextEventPane:'',
         typePipeEventPane:'',
         typeFlowEventPane:'',
@@ -155,20 +159,39 @@ export default {
       //管道事件
       this.htVars.typePipeEventPane.addRow([div],[100,100]);
       this.htVars.typePipeEventPane.addRow(['动态',{
-        id:'max',
+        id:'dongtai',
         element: this.htVars.htForm.pipeMax
       }],[100,100]);
       this.htVars.typePipeEventPane.addRow([
         '静态',
         {
-          id: 'min',
+          id: 'jingtai',
           element: this.htVars.htForm.pipeMin
         }
       ],[100,100])
 
       //水管事件
       this.htVars.typeTextEventPane.addRow([div],[100,100]);
+
+      //液柱事件
+      this.htVars.typeYezhuEventPane.addRow([div],[100,100]);
+      this.htVars.typeYezhuEventPane.addRow([
+        '最大值',
+        {
+          id:'maxYezhu',
+          element: this.htVars.htForm.maxYezhu
+        }
+        ],[100,100]);
+      this.htVars.typeYezhuEventPane.addRow([
+        '最小值',
+        {
+          id:'minYezhu',
+          element: this.htVars.htForm.minYezhu
+        }
+        ],[100,100])
       }, 500);
+
+    
       
     },
     
@@ -177,6 +200,7 @@ export default {
     * 
     */
   initTab(nodeType){    
+        console.log('initTab',nodeType);
          // create view
         let div = document.createElement('div');
         // create tab
@@ -201,6 +225,10 @@ export default {
           case 'line':
           properTab.setView(this.htVars.typeLineProperView);
           eventTab.setView(div);
+          break;
+          case 'yezhu':
+          properTab.setView(this.htVars.typeYezhuProperView);
+          eventTab.setView(this.htVars.typeYezhuEventPane);
           break;
         }
         // add to model
@@ -356,7 +384,7 @@ export default {
               console.log('getValue is',data, property, value,view,data.getHtml(),dom.style.fontSize,$('#text').val());              
               return dom.style.fontSize;
              
-            }.bind(this),
+            },
              setValue: function(data,property,value,view){            
                  let dom = document.getElementById('text');                          
               console.log(dom,dom.style.fontSize);
@@ -461,12 +489,35 @@ export default {
            
           },
          ])
+
+         //初始化液柱属性
+         this.htVars.typeYezhuProperView.addProperties([
+          
+          {
+            name: 'shape.background',
+            displayName:'填充颜色',
+            accessType: 'style',
+            editable: true,
+            valueType: 'color',
+            getValue: function(data, property, value,view){              
+              console.log('getValue is',data, property, value,view,ht.Default.getImage('yezhu'));   
+              data.setImage(ht.Default.getImage(data.getImage()));
+              return data.getImage().comps[1].background;             
+            },
+            setValue: function(data,property,value,view){
+              console.log('set is',data.getImage(),value);
+              let img = data.getImage();
+              img.comps[1].background = value;
+              return data.setImage(img);
+            }
+          },           
+         ])
    },
    /**
-    * 初始化创建画布
+    * 初始化htVars
     */
-    makeGraph() {
-        this.htVars.palette = new this.$ht.widget.Palette();
+   initHtvars(){
+     this.htVars.palette = new this.$ht.widget.Palette();
         this.htVars.graphView = window.graph = new this.$ht.graph.GraphView();
         this.htVars.dataModel = this.htVars.graphView.dm();
         this.htVars.properView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
@@ -481,8 +532,16 @@ export default {
         this.htVars.typeLineProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typeShapeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typePilotProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typeYezhuProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+        this.htVars.typeYezhuEventPane = new this.$ht.widget.FormPane();
         this.htVars.typePipeEventPane = new this.$ht.widget.FormPane();
         this.htVars.typeTextEventPane = new this.$ht.widget.FormPane();
+   },
+   /**
+    * 初始化创建画布
+    */
+    makeGraph() {
+        this.initHtvars();
         let leftSplitView = new this.$ht.widget.SplitView(this.htVars.formPane,this.htVars.tabView,'v',.3);
         let splitView = new this.$ht.widget.SplitView(this.htVars.palette, this.htVars.graphView, "h", .2),
         mainSplitView = new this.$ht.widget.SplitView(splitView, leftSplitView, 'h', -300),
@@ -562,12 +621,7 @@ export default {
                 this.htVars.htForm.sizeH.setValue(nodeSize.height);
                 switch(paletteNode.s('nodeType')){
                   case 'node':
-                    node = new this.$ht.Node();
-                    node.setStyle('shape.background',null);
-                    node.setStyle('shape.border.color','#000');
-                    node.setStyle('shape.border.width','2');
-                    node.setImage(paletteNode.getImage());
-                    node.setStyle('shape',paletteNode.getStyle('shape'));                   
+                   node = this.createStandardNode(lp,paletteNode);
                   break;
                   case 'pipe':
                     node = this.createPipeNode(lp);                  
@@ -578,7 +632,8 @@ export default {
                   case 'line':
                     node = this.createLineNode(paletteNode.s('lineType'),lp);
                   break;
-                  case 'state':
+                  case 'yezhu':
+                    node = this.createYezhuNode(lp);
                   break;
                   case 'pilot':
                   break;
@@ -587,6 +642,40 @@ export default {
               this.htVars.historyManager.endTransaction();
             }
         }
+    },   
+    createStandardNode(lp,paletteNode){
+      let node = new this.$ht.Node();
+      node.setStyle('shape.background',null);
+      node.setStyle('shape.border.color','#000');
+      node.setStyle('shape.border.width','2');
+      node.setImage(paletteNode.getImage());
+      node.setStyle('shape',paletteNode.getStyle('shape'));
+      return node;
+    },
+    createYezhuNode(lp){    
+      ht.Default.setImage('yezhu',{
+        width: 100,
+        height: 200,
+        comps:[
+          {
+            type: 'shape',
+            points:[0,0,0,200,100,200,100,0],
+            segments:[1,2,2,2,5],
+            background: null,
+            borderWidth: '3',
+            borderColor: '#7E83A4'
+          },
+          {
+            type: 'shape',
+            points:[0,200,0,100,100,100,100,200],
+            segments:[1,2,2,2,5],
+            background: '#617EFE'
+          }
+        ]
+      })
+      let yezhu = new this.$ht.Node();
+      yezhu.setImage('yezhu');
+      return yezhu;
     },
     createLineNode(type,lp){
       let line = new ht.Shape();
@@ -663,7 +752,11 @@ export default {
      * 按类型将图元放入画布之中
      */
     dropNodebyType(node,paletteNode,lp){
-      console.log('弄得is',node);
+     
+    /*   for(let i in node){
+         console.log('弄得is',i,':',node[i]);
+      } */
+      console.log(node.getStyleMap());
               this.htVars.graphView.dm().add(node);
               node.setPosition(lp.x, lp.y);             
               node.setStyle('nodeType',paletteNode.getStyle('nodeType'));
@@ -747,6 +840,20 @@ export default {
      
     },
     /**
+     * 创建液柱图元节点
+     */
+    createPaletteYezhuNode(group,model){
+      let node = new ht.Node();
+      node.setName('液柱');
+      node.setImage(require(`@/assets/ic_yezhu.svg`));
+      node.s({
+        'draggable':true,
+        'nodeType': 'yezhu',
+      })
+      group.addChild(node);
+      model.add(node);
+    },
+    /**
      * 初始化图元节点面板模型
      * @param model 画布数据模型
      * 
@@ -760,6 +867,7 @@ export default {
       this.createPaletteTextNode(group,model);
       this.createPaletteStandardNode(group,model);
       this.createPalettePipeNode(group,model);
+      this.createPaletteYezhuNode(group,model);
       this.createPaletteShapeNode(group,model);     
       model.add(group);
      

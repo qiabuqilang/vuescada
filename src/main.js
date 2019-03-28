@@ -20,6 +20,7 @@ import 'lib/plugin/ht-autolayout';
 import 'lib/plugin/ht-dialog';
 import 'lib/plugin/ht-htmlnode';
 import 'lib/plugin/ht-panel';
+import 'lib/plugin/ht-live';
 // ht------------
 import $ from 'jquery';
 import mixins from '@/mixins';
