@@ -24,6 +24,11 @@ export default new Router({
       component: () => import('@/views/preview/preview'),
     },
     {
+      path: '/img',
+      name: 'imgHouse',
+      component: () => import('@/components/imgHouse'),
+    },
+    {
       path: '*',
       name: 'f0f',
       component: fof,

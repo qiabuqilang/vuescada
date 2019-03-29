@@ -8,6 +8,9 @@
       <div class="showPreview" ref="showPreview"></div>      
     </el-dialog>
    <!-- <textarea name="" id="testText" cols="30" rows="10">sadfasdfasfasdf</textarea> -->
+   <!-- <h2>{{testString}}</h2> -->
+
+    <img-house class="imgHouse" :showImageHouse="showImageHouse"/>
     </div>
 </template>
 <script>
@@ -17,14 +20,18 @@ import {Message, MessageBox} from 'element-ui';
 import device from '@/api/device';
 import scada from '@/api/scada';
 import { setTimeout } from 'timers';
-
+import imgHouse from '@/components/imgHouse';
 export default {
   name: "htbox",
- 
+  components:{
+    imgHouse
+  },
   data() {
     return {
       testArr: [1,2,3,4,5],
+      testString: '撒打裂缝sldfjaskfa',
       showPreview: false,
+      showImageHouse: true,
       testHtmlNode: new ht.HtmlNode(),     
       standardNode : [{name:'矩形',style:'rect',icon: 'ic_rectangle.svg'}, {name:'圆形',style:'circle',icon:'ic_circle.svg'}, {name:'三角形',style:'triangle',icon:'ic_triangle.svg'}, {name:'多边形',style:'hexagon',icon: 'ic_polygon.svg'}],
       lineNode:[{name:'直线',icon:'ic_line.svg',lineType:'straight'},{name:'曲线',icon:'ic_curve.svg',lineType:'curve'}],
@@ -57,6 +64,8 @@ export default {
         typeTextProperView: '',
         typeLineProperView:'',
         typeYezhuProperView:'',
+        typeStateProperView:'',
+        typeStateEventPane:'',
         typeYezhuEventPane:'',
         typeTextEventPane:'',
         typePipeEventPane:'',
@@ -211,6 +220,7 @@ export default {
         eventTab.setName('事件');
         switch(nodeType){
           case 'node':
+          console.log('node is clicked');
           properTab.setView(this.htVars.typeNodeProperView);
           eventTab.setView(div);
           break;
@@ -229,6 +239,10 @@ export default {
           case 'yezhu':
           properTab.setView(this.htVars.typeYezhuProperView);
           eventTab.setView(this.htVars.typeYezhuEventPane);
+          break;
+          case 'state':
+          properTab.setView(this.htVars.typeStateProperView);
+          eventTab.setView(div);
           break;
         }
         // add to model
@@ -512,6 +526,28 @@ export default {
             }
           },           
          ])
+
+         //初始化状态显示属性      
+      
+       /*  this.htVars.typeStateProperView.setConfig({
+          content: node
+        }) */
+        let button = document.createElement('button');
+        button.innerHTML = '选择图片';
+        button.onclick = this.chooseImg;
+         this.htVars.typeStateProperView = new ht.widget.Panel({
+                    title:'',
+                    titleHeight:'0',
+                    titleBackground:'transparent',
+                    width: 200,                 
+                    contentHeight: 60,
+                    content: button
+                    // content: button
+                });
+        
+   },
+   chooseImg(){
+     alert(1111);
    },
    /**
     * 初始化htVars
@@ -533,6 +569,8 @@ export default {
         this.htVars.typeShapeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typePilotProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
         this.htVars.typeYezhuProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+       
+
         this.htVars.typeYezhuEventPane = new this.$ht.widget.FormPane();
         this.htVars.typePipeEventPane = new this.$ht.widget.FormPane();
         this.htVars.typeTextEventPane = new this.$ht.widget.FormPane();
@@ -547,12 +585,12 @@ export default {
         mainSplitView = new this.$ht.widget.SplitView(splitView, leftSplitView, 'h', -300),
         upSplitView = new this.$ht.widget.SplitView(this.htVars.toolbar, mainSplitView,'v',.1);
         this.htVars.historyManager= new this.$ht.HistoryManager(this.htVars.dataModel);
+        this.htVars.graphView.adjustHtmlNodeIndex = true;
            
           
         this.initformPane();
         this.initEventFormPane();
-        this.initProperView();
-        this.initTab();
+        this.initProperView();       
         this.initPaletteModel(this.htVars.palette.dm());
         
       //  this.htVars.accordionView.add('属性列表',this.htVars.properView,true);
@@ -635,7 +673,8 @@ export default {
                   case 'yezhu':
                     node = this.createYezhuNode(lp);
                   break;
-                  case 'pilot':
+                  case 'state':
+                    node = this.createStateNode(lp);
                   break;
                 }
                 this.dropNodebyType(node,paletteNode,lp);
@@ -643,6 +682,11 @@ export default {
             }
         }
     },   
+    createStateNode(lp){
+      let node = new this.$ht.Node();
+      node.setImage(require('@/assets/pilotlamp/ic_lamp_state1.svg'));
+      return node;
+    },
     createStandardNode(lp,paletteNode){
       let node = new this.$ht.Node();
       node.setStyle('shape.background',null);
@@ -854,6 +898,20 @@ export default {
       model.add(node);
     },
     /**
+     * 创建状态显示图元节点
+     */
+    createPaletteStateNode(group,model){
+      let node = new ht.Node();
+      node.setName('状态显示');
+      node.setImage(require('@/assets/ic_state.svg'));
+      node.s({
+        'draggable': true,
+        'nodeType': 'state'
+      });
+      group.addChild(node);
+      model.add(node);
+    },
+    /**
      * 初始化图元节点面板模型
      * @param model 画布数据模型
      * 
@@ -868,7 +926,8 @@ export default {
       this.createPaletteStandardNode(group,model);
       this.createPalettePipeNode(group,model);
       this.createPaletteYezhuNode(group,model);
-      this.createPaletteShapeNode(group,model);     
+      this.createPaletteShapeNode(group,model);  
+      this.createPaletteStateNode(group,model);
       model.add(group);
      
     },
@@ -932,5 +991,6 @@ export default {
 </script>
 <style scoped lang='scss'>
 .htbox{
+  
 }
 </style>

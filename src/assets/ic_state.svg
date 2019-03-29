@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_yezhu</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="10指示显示选择样式" transform="translate(-34.000000, -436.000000)">
+            <g id="左侧栏" transform="translate(0.000000, 120.000000)">
+                <g id="分组-13" transform="translate(26.000000, 69.000000)">
+                    <g id="ic_yezhu" transform="translate(8.000000, 247.000000)">
+                        <circle id="椭圆形-copy-2" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" cx="20" cy="20" r="17"></circle>
+                        <path d="M18.3309099,25.0209334 L19.5028663,14.1228657 C19.5323918,13.8483064 19.7789014,13.6496672 20.0534608,13.6791928 C20.2872893,13.7043382 20.4719883,13.8890373 20.4971337,14.1228657 L21.6690901,25.0209334 C22.7597001,25.6137484 23.5,26.7694596 23.5,28.0980772 C23.5,30.0310738 21.9329966,31.5980772 20,31.5980772 C18.0670034,31.5980772 16.5,30.0310738 16.5,28.0980772 C16.5,26.7694596 17.2402999,25.6137484 18.3309099,25.0209334 Z" id="合并形状" fill="#617EFE"></path>
+                        <rect id="矩形" stroke="#333333" stroke-width="10" x="24" y="10.5" width="1" height="1"></rect>
+                        <rect id="矩形" stroke="#333333" stroke-width="10" transform="translate(24.058743, 8.177284) rotate(19.000000) translate(-24.058743, -8.177284) " x="28.0587434" y="11.1772845" width="1" height="1"></rect>
+                        <rect id="矩形" stroke="#333333" stroke-width="10" transform="translate(27.677659, 10.135744) rotate(38.000000) translate(-27.677659, -10.135744) " x="31.6776589" y="13.1357436" width="1" height="1"></rect>
+                        <rect id="矩形" stroke="#333333" stroke-width="10" transform="translate(30.464581, 13.163148) rotate(57.000000) translate(-30.464581, -13.163148) " x="34.464581" y="16.163148" width="1" height="1"></rect>
+                        <rect id="矩形" stroke="#333333" stroke-width="10" transform="translate(9.535419, 13.163148) rotate(303.000000) translate(-9.535419, -13.163148) " x="13.535419" y="16.163148" width="1" height="1"></rect>
+                        <rect id="矩形" stroke="#333333" stroke-width="10" transform="translate(12.322341, 10.135744) rotate(322.000000) translate(-12.322341, -10.135744) " x="16.3223411" y="13.1357436" width="1" height="1"></rect>
+                        <rect id="矩形" stroke="#333333" stroke-width="10" transform="translate(15.941257, 8.177284) rotate(341.000000) translate(-15.941257, -8.177284) " x="19.9412566" y="11.1772845" width="1" height="1"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
