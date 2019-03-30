@@ -1,89 +1,94 @@
+import scada from '@/api/scada';
+import { Message } from 'element-ui';
+import { mapState, mapMutations } from 'vuex';
+
 export default {
   name: 'mixins', 
   data() {
     return {
       toolbarItems: [
         {
-          icon: "zoomIn",
-          label: "放大",
-          action: function() {
-              console.log(this);
+          icon: 'zoomIn',
+          label: '放大',
+          action: function () {
+            console.log(this);
             this.htVars.graphView.zoomIn(true);
-          }.bind(this)
+          }.bind(this),
         },
         {
-          icon: "zoomOut",
-          label: "缩小",
-          action: function() {
+          icon: 'zoomOut',
+          label: '缩小',
+          action: function () {
             this.htVars.graphView.zoomOut(true);
-          }.bind(this)
+          }.bind(this),
         },
         {
-          icon: "fitContent",
-          label: "适应",
-          action: function() {
+          icon: 'fitContent',
+          label: '适应',
+          action: function () {
             this.htVars.graphView.fitContent(true);
-          }.bind(this)
+          }.bind(this),
         },
         
-        "separator",
+        'separator',
         {
-          label: "预览",
-          action: function() {          
-             this.showPreview = true;
-              setTimeout(()=>{
-                let dataModel = new ht.DataModel(),
-                graphView = new ht.graph.GraphView(dataModel),
+          label: '预览',
+          action: function () {          
+            this.showPreview = true;
+            setTimeout(() => {
+              const dataModel = new this.$ht.DataModel(),
+                graphView = new this.$ht.ht.graph.GraphView(dataModel),
                 view = graphView.getView();
-                this.viewStyle(view);
-                this.$refs.showPreview.appendChild(view);
-             
-                dataModel.deserialize(this.htVars.dataModel.serialize());
-                graphView.enableFlow();
-                graphView.enableDashFlow();
-                graphView.setDisabled(true);
-           
-              },1000)
-          
-          }.bind(this)
+              this.viewStyle(view);
+              this.$refs.showPreview.appendChild(view);             
+              dataModel.deserialize(this.htVars.dataModel.serialize());
+              graphView.enableFlow();
+              graphView.enableDashFlow();
+              graphView.setDisabled(true);
+            }, 1000);
+          }.bind(this),
         },
         {
-          label: "保存",
-          action: function() {
+          label: '保存',
+          action: function () {
             console.log(scada);
-            let data = { 
-              type:'saveScada',
+            const data = { 
+              type: 'saveScada',
               scadaString: JSON.stringify(this.htVars.dataModel.serialize()),
-              deviceType: this.deviceType
-              }
-            scada.saveScada('/inventory/managedObjects','',data).then(res=>{
+              deviceType: this.deviceType,
+            };
+            scada.saveScada('/inventory/managedObjects', '', data).then((res) => {
               console.log(res);
-              if(res.data.id>0){
+              if (res.data.id > 0) {
                 Message({
                   message: '保存成功',
-                  type: 'success'
-                })
-              }else{
+                  type: 'success',
+                });
+              } else {
                 Message({
                   message: '保存失败',
-                  type: 'error'
-                })
+                  type: 'error',
+                });
               }
-            })
-          }.bind(this)
+            });
+          }.bind(this),
         },
         {
-          label: "真实使用",
-          action: function() {
+          label: '真实使用',
+          action: function () {
             this.$router.push({
-              path: '/preview'
-            })
-          }.bind(this)
-        }
+              path: '/preview',
+            });
+          }.bind(this),
+        },
       ],
     };
   },
+  computed: {
+    ...mapState(['editingNodeId']),
+  },
   methods: {
+    ...mapMutations(['m_editingNodeId']),
     /**
      * 
      * 处理图元节点移动位置和大小
@@ -107,14 +112,15 @@ export default {
     handleGraphViewEventListener() {
       this.htVars.graphView.addInteractorListener((e) => {
         if (e.kind === 'clickData') {
-          console.log(`${e.data  }被单击`, e, 'e.size', e.data.getSize());
-          console.log(ht.widget.TextField); 
-          this.clickNode = e.data;            
+          console.log(`${e.data}被单击`, e, 'e.size', e.data.getSize(), 'id', e.data.getId());         
+          this.clickNode = e.data;
+          this.m_editingNodeId({ id: e.data.getId() });          
           this.listenNodeSizePosition(e.data, e.event);             
         } else if (e.kind === 'doubleClickData') {
-          console.log(`${e.data  }被双击`);
+          console.log(`${e.data}被双击`);
         } else if (e.kind === 'clickBackground') {
           console.log('单击背景');
+          this.m_editingNodeId({ id: 0 });
         } else if (e.kind === 'doubleClickBackground') {
           console.log('双击背景');
         } else if (e.kind === 'beginRectSelect') {

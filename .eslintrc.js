@@ -48,6 +48,9 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-console': 'off',
     'no-trailing-spaces': 'off',
-    "linebreak-style": [0 ,"error", "windows"]
+    "linebreak-style": [0 ,"error", "windows"],
+    'eol-last': 'off',
+    'func-names': 'off',
+    'one-var': 'off'
   }
 }

@@ -1,8 +1,9 @@
-<template>
+<template>   
     <div class='imgHouse'>            
      <el-dialog     
-      :visible.sync="show"  
+      :visible="showImageHouse"  
       width="85%"   
+      ref="dialog"     
       class="el_dialog_my">    
       <div slot="title" class="title">
           样式库
@@ -10,8 +11,8 @@
       <div class="box">
           <div class="left">
               <el-row>
-                <el-col :span="4" v-for="item of imgArr" :key="item.img" @click="clickStyle(item.id)">
-                    <div class="img">
+                <el-col :span="4" v-for="item of imgArr" :key="item.img">
+                    <div :class="['img',item.selected?'selected':'']"  @click="clickStyle(item.id)">
                         <img :src="item.img" alt="">
                         <h3>{{item.name}}</h3>
                     </div>
@@ -19,9 +20,9 @@
             </el-row>
           </div>
           <div class="right">
-            <el-row>
+            <el-row  v-if="children.length>0">
                 <el-col :span="8" v-for="item of children" :key="item.img">
-                    <div class="img">
+                    <div class="img"> 
                         <img :src="item.img" alt="">
                     </div>
                 </el-col>
@@ -29,16 +30,17 @@
           </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="show = false">取 消</el-button>
-        <el-button type="primary" @click="show = false">保存</el-button>
+        <el-button @click="handleColse()">取 消</el-button>
+        <el-button type="primary" @click="handleSave()">保存</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>   
     </div>
 </template>
 <script>
-
+import {mapState, mapMutations} from 'vuex';
 export default {
      name: 'imgHouse', 
+   
     data() {
       return{
           imgArr:[
@@ -46,6 +48,7 @@ export default {
                   id: 1,
                   name:"风机",
                   img: require('@/assets/pilotlamp/ic_lamp_state1.svg'),
+                  selected: true,
                   children: [
                       {
                           id:2,
@@ -72,29 +75,86 @@ export default {
                           img: require('@/assets/pilotlamp/ic_lamp_state6.svg')
                       }
                   ]
+              },
+               {
+                  id: 8,
+                  name:"风机",
+                  img: require('@/assets/fan/ic_fengshan_bianpin.svg'),
+                  selected: false,
+                  children: [                      
+                      {
+                          id:9,
+                          img: require('@/assets/fan/ic_fengshan_bianpin.svg')
+                      },
+                      {
+                          id: 10,
+                          img: require('@/assets/fan/ic_fengshan_gongpin.svg')
+                      },
+                      {
+                          id: 11,
+                          img: require('@/assets/fan/ic_fengshan_guzhang.svg')
+                      },
+                      {
+                          id:12,
+                          img: require('@/assets/fan/ic_fengshan_weitouru.svg')
+                      },
+                      {
+                          id: 13,
+                          img: require('@/assets/fan/ic_fengshan_yuanting.svg')
+                      },
+                      {
+                          id: 14,
+                           img: require('@/assets/fan/ic_fengshan_daiji.svg')
+                      }
+                      
+                  ]
               }
           ],
           children: [],
-          show: false
+          show: true
       }
+    },  
+    computed:{
+        ...mapState(['showImageHouse','editingNodeId','graphView']),
     },
-    props:{
-        showImageHouse:{
-            type: Boolean,
-            default: false
-        }
+    updated(){
+        
     },
-    created(){
-        // this.show = this.showImageHouse;
-        this.show = true;
-        console.log('this.showImageHouse is',this.showImageHouse);
+    created(){      
+        
+        this.handleOpen();
+       
+    },
+    mounted(){       
+       this.$refs.dialog.open(this.handleOpen);
+       this.$refs.dialog.close(this.handleColse);
     },
     methods:{
-        clickStyle(id){
-            alert(id);
-            this.children = this.imgArr.map((item)=>{
-                return item.id===id?item.children:'';
-            });
+        ...mapMutations(['m_showImageHouse',]),
+        handleColse(){
+             this.m_showImageHouse({show: false});
+        },
+        handleOpen(){              
+            this.imgArr.map((item)=>{
+               if(item.selected){
+                this.clickStyle(item.id);
+               }
+            });         
+        },
+        handleSave(){
+            console.log(this.editingNodeId,this.graphView);
+        },
+        clickStyle(id){           
+            this.children = []
+            this.imgArr.map((item)=>{
+               if(item.id === id){
+                 console.log(item);
+                 item.selected = true;
+                 this.children = item.children;
+               }else{
+                   item.selected = false;
+               }
+            });           
             console.log(this.children);
         }
     }
@@ -109,9 +169,10 @@ export default {
           .el-row{             
               padding:23px 0px;
             .el-col{             
-              text-align: center;
-              border:1px solid red;
+              text-align: center;  
               .img{
+                 
+                  margin: 0 auto;                 
                   .tit{
                       font-size: 16px;
                       color: #333333;
@@ -122,13 +183,25 @@ export default {
         .left{
             float: left;
             width: 724px;
-            height: 482px;
+            
             border: 1px solid #0f0;
+            .selected{
+                width: 100px;
+                height: 100px;
+                border: 1px solid #617EFE;                
+                background:rgba(97, 127, 247, 0.2);
+            }
         }
         .right{
             float: left;
             width: 336px;
-            height: 482px;
+           
+            .img{
+                width: 80px;
+                height: 80px;            
+                border: 1px dashed rgba(207, 207, 207, 1);
+                margin-bottom: 48px !important;
+            }
         }
     }
     
@@ -146,8 +219,9 @@ export default {
         text-indent: 21px;
         }
         .el-dialog__headerbtn{
+            display: none;
             position: absolute;
-            top:5%;
+            top:2%;
             right: 2%;
         }
     }

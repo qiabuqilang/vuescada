@@ -1,16 +1,19 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import ht from './modules/ht';
-
+import state from './state';
+import mutations from './mutations';
+import actions from './actions';
+import getters from './getters';
 
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== 'production';
 
 export default new Vuex.Store({
-  modules: {
-    ht,
-  },
+  state,
+  mutations,
+  actions,
+  getters,
   strict: debug,
 
 });

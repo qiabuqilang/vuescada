@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 
-import ElementUI from 'element-ui';
+import { dialog, Button, Message, Row, Col } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 import 'reset-css/reset.css';
@@ -29,10 +29,13 @@ import App from './App';
 import router from './router';
 import '../static/scss/public.scss';
 
-Vue.use(ElementUI);
 Vue.mixin(mixins);
 Vue.config.productionTip = false;
-
+Vue.component(dialog.name, dialog);
+Vue.component(Button.name, Button);
+Vue.component(Message.name, Message);
+Vue.component(Row.name, Row);
+Vue.component(Col.name, Col);
 
 Vue.prototype.$ht = window.ht;
 /* eslint-disable no-new */

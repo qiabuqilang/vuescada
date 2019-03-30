@@ -10,15 +10,16 @@
    <!-- <textarea name="" id="testText" cols="30" rows="10">sadfasdfasfasdf</textarea> -->
    <!-- <h2>{{testString}}</h2> -->
 
-    <img-house class="imgHouse" :showImageHouse="showImageHouse"/>
+    <img-house class="imgHouse" v-if="showImageHouse"/>
     </div>
 </template>
 <script>
 
 import { mapMutations, mapState } from "vuex";
+import types from '@/store/mutation-types';
 import {Message, MessageBox} from 'element-ui';
 import device from '@/api/device';
-import scada from '@/api/scada';
+
 import { setTimeout } from 'timers';
 import imgHouse from '@/components/imgHouse';
 export default {
@@ -30,8 +31,7 @@ export default {
     return {
       testArr: [1,2,3,4,5],
       testString: '撒打裂缝sldfjaskfa',
-      showPreview: false,
-      showImageHouse: true,
+      showPreview: false,     
       testHtmlNode: new ht.HtmlNode(),     
       standardNode : [{name:'矩形',style:'rect',icon: 'ic_rectangle.svg'}, {name:'圆形',style:'circle',icon:'ic_circle.svg'}, {name:'三角形',style:'triangle',icon:'ic_triangle.svg'}, {name:'多边形',style:'hexagon',icon: 'ic_polygon.svg'}],
       lineNode:[{name:'直线',icon:'ic_line.svg',lineType:'straight'},{name:'曲线',icon:'ic_curve.svg',lineType:'curve'}],
@@ -97,17 +97,12 @@ export default {
     };
   },
   computed: {
-    ...mapState({ htstate: "ht" })
+    ...mapState([{ htstate: "ht" },'showImageHouse','graphView'])
   },
   methods: {
     ...mapMutations([
-      "paletteMutation",
-      "graphViewMutation",
-      "dataModelMutation",
-      "listMutation",
-      "treeMutation",
-      "properViewMutation",
-      "toolbarMutation"
+      'm_showImageHouse',
+      'm_graphView'
     ]),
     /**
      * 初始化基本属性位置&大小
@@ -200,8 +195,6 @@ export default {
         ],[100,100])
       }, 500);
 
-    
-      
     },
     
    /**
@@ -547,28 +540,33 @@ export default {
         
    },
    chooseImg(){
-     alert(1111);
+    this.m_showImageHouse({show: true});
+    console.log(this.showImageHouse);
+    
    },
    /**
     * 初始化htVars
     */
    initHtvars(){
-     this.htVars.palette = new this.$ht.widget.Palette();
-        this.htVars.graphView = window.graph = new this.$ht.graph.GraphView();
-        this.htVars.dataModel = this.htVars.graphView.dm();
-        this.htVars.properView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.toolbar = new this.$ht.widget.Toolbar(this.toolbarItems);
-        this.htVars.accordionView = new this.$ht.widget.AccordionView();
-        this.htVars.formPane = new this.$ht.widget.FormPane();
-        this.htVars.tabView = new this.$ht.widget.TabView();
-        this.htVars.formPaneEvent =new this.$ht.widget.FormPane();
-        this.htVars.typeNodeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typePipeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typeTextProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typeLineProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typeShapeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typePilotProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
-        this.htVars.typeYezhuProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.palette = new this.$ht.widget.Palette();
+      this.htVars.graphView = window.graph = new this.$ht.graph.GraphView();     
+      this.htVars.dataModel = this.htVars.graphView.getDataModel();
+      this.htVars.properView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.toolbar = new this.$ht.widget.Toolbar(this.toolbarItems);
+      this.htVars.accordionView = new this.$ht.widget.AccordionView();
+      this.htVars.formPane = new this.$ht.widget.FormPane();
+      this.htVars.tabView = new this.$ht.widget.TabView();
+      this.htVars.formPaneEvent =new this.$ht.widget.FormPane();
+
+     
+
+      this.htVars.typeNodeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.typePipeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.typeTextProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.typeLineProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.typeShapeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.typePilotProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
+      this.htVars.typeYezhuProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
        
 
         this.htVars.typeYezhuEventPane = new this.$ht.widget.FormPane();
@@ -973,6 +971,7 @@ export default {
   },
 
   created() {    
+    console.log(this.showImageHouse);
     this.getDeviceList();
     this.makeGraph();
   },
