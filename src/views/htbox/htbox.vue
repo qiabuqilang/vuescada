@@ -160,6 +160,7 @@ export default {
        
      });
       div.appendChild(select);
+      console.log('div is',div);
       //管道事件
       this.htVars.typePipeEventPane.addRow([div],[100,100]);
       this.htVars.typePipeEventPane.addRow(['动态',{
@@ -173,11 +174,31 @@ export default {
           element: this.htVars.htForm.pipeMin
         }
       ],[100,100])
-
-      //水管事件
+      console.log('div加入之后',div);
+      //文本事件
+     div = document.createElement('div');
+      div.className = 'eventFormPane';
+      select = document.createElement('select');
+     option = document.createElement('option');
+     option.innerHTML = '请选择变量';
+     select.appendChild(option);   
+    supportedMeasurements = this.supportedMeasurements;
+     Array.prototype.forEach.call(Object.values(supportedMeasurements),function(item){
+       option = document.createElement('option');
+       option.innerHTML = item;
+       select.appendChild(option);
+       option = '';
+       
+     });
+      div.appendChild(select);
       this.htVars.typeTextEventPane.addRow([div],[100,100]);
-
       //液柱事件
+      div = document.createElement('div');
+      div.className = 'eventFormPane';
+      select = document.createElement('select');
+      option = document.createElement('option');
+      option.innerHTML = '请选择变量';
+      select.appendChild(option);
       this.htVars.typeYezhuEventPane.addRow([div],[100,100]);
       this.htVars.typeYezhuEventPane.addRow([
         '最大值',
@@ -239,7 +260,7 @@ export default {
           break;
         }
         // add to model
-        let tabModel = this.htVars.tabView.getTabModel();
+        let tabModel = window.tabModel = this.htVars.tabView.getTabModel();
         tabModel.clear();
         tabModel.add(properTab);
         tabModel.add(eventTab);
@@ -549,16 +570,14 @@ export default {
     */
    initHtvars(){
       this.htVars.palette = new this.$ht.widget.Palette();
-      this.htVars.graphView = window.graph = new this.$ht.graph.GraphView();     
-      this.htVars.dataModel = this.htVars.graphView.getDataModel();
+      this.htVars.graphView = window.graphView = new this.$ht.graph.GraphView();     
+      this.htVars.dataModel = window.dataModel = this.htVars.graphView.getDataModel();
       this.htVars.properView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
       this.htVars.toolbar = new this.$ht.widget.Toolbar(this.toolbarItems);
       this.htVars.accordionView = new this.$ht.widget.AccordionView();
       this.htVars.formPane = new this.$ht.widget.FormPane();
       this.htVars.tabView = new this.$ht.widget.TabView();
-      this.htVars.formPaneEvent =new this.$ht.widget.FormPane();
-
-     
+      this.htVars.formPaneEvent =new this.$ht.widget.FormPane();     
 
       this.htVars.typeNodeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);
       this.htVars.typePipeProperView = new this.$ht.widget.PropertyView(this.htVars.dataModel);

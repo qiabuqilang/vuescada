@@ -120,6 +120,7 @@ export default {
           console.log(`${e.data}被双击`);
         } else if (e.kind === 'clickBackground') {
           console.log('单击背景');
+          tabModel.clear();
           this.m_editingNodeId({ id: 0 });
         } else if (e.kind === 'doubleClickBackground') {
           console.log('双击背景');

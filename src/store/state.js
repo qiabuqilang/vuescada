@@ -1,7 +1,6 @@
 export default {
   showImageHouse: false,
-  //   graphView: new this.$ht.graph.GraphView(),
+  //   graphView: new ht.graph.GraphView(),
   editingNodeId: 0,
   
-}
-;
+};

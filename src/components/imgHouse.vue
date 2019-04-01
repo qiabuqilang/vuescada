@@ -142,7 +142,15 @@ export default {
             });         
         },
         handleSave(){
-            console.log(this.editingNodeId,this.graphView);
+            console.log(this.editingNodeId,graphView,dataModel.getDataById(this.editingNodeId));
+            dataModel.getDataById(this.editingNodeId)
+            let node = dataModel.getDataById(this.editingNodeId);
+            this.imgArr.map(item=>{
+                if(item.selected){
+                    node.setImage(item.img);
+                }
+            })
+            this.handleColse();
         },
         clickStyle(id){           
             this.children = []
