@@ -10,7 +10,7 @@ export default new Router({
     {
       path: '/',
       name: 'htbox',
-      component: () => import('@/views/htbox/htbox'),
+      component: () => import('@/views/htbox'),
      
     },
     {
