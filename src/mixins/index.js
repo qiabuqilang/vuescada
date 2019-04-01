@@ -2,90 +2,39 @@ import scada from '@/api/scada';
 import { Message } from 'element-ui';
 import { mapState, mapMutations } from 'vuex';
 
+
 export default {
   name: 'mixins', 
   data() {
     return {
-      toolbarItems: [
+      node: {},
+      testX: 100,
+      arrPS: [
         {
-          icon: 'zoomIn',
-          label: '放大',
-          action: function () {
-            console.log(this);
-            this.htVars.graphView.zoomIn(true);
-          }.bind(this),
+          tit: '位置',
+          x: 0,
+          y: 0,
         },
         {
-          icon: 'zoomOut',
-          label: '缩小',
-          action: function () {
-            this.htVars.graphView.zoomOut(true);
-          }.bind(this),
-        },
-        {
-          icon: 'fitContent',
-          label: '适应',
-          action: function () {
-            this.htVars.graphView.fitContent(true);
-          }.bind(this),
-        },
-        
-        'separator',
-        {
-          label: '预览',
-          action: function () {          
-            this.showPreview = true;
-            setTimeout(() => {
-              const dataModel = new this.$ht.DataModel(),
-                graphView = new this.$ht.ht.graph.GraphView(dataModel),
-                view = graphView.getView();
-              this.viewStyle(view);
-              this.$refs.showPreview.appendChild(view);             
-              dataModel.deserialize(this.htVars.dataModel.serialize());
-              graphView.enableFlow();
-              graphView.enableDashFlow();
-              graphView.setDisabled(true);
-            }, 1000);
-          }.bind(this),
-        },
-        {
-          label: '保存',
-          action: function () {
-            console.log(scada);
-            const data = { 
-              type: 'saveScada',
-              scadaString: JSON.stringify(this.htVars.dataModel.serialize()),
-              deviceType: this.deviceType,
-            };
-            scada.saveScada('/inventory/managedObjects', '', data).then((res) => {
-              console.log(res);
-              if (res.data.id > 0) {
-                Message({
-                  message: '保存成功',
-                  type: 'success',
-                });
-              } else {
-                Message({
-                  message: '保存失败',
-                  type: 'error',
-                });
-              }
-            });
-          }.bind(this),
-        },
-        {
-          label: '真实使用',
-          action: function () {
-            this.$router.push({
-              path: '/preview',
-            });
-          }.bind(this),
+          tit: '大小',
+          width: 0,
+          height: 0,
         },
       ],
     };
   },
   computed: {
     ...mapState(['editingNodeId']),
+  },
+  mounted() {
+    console.log('refs', this.$refs);
+    if (this.editingNodeId) {
+      this.node.name = dataModel.getDataById(this.editingNodeId).getName();
+    }
+    /*  setTimeout(() => {
+      this.listenNodeSizePosition();
+    }, 1500); */
+    // this.listenNodeSizePosition();
   },
   methods: {
     ...mapMutations(['m_editingNodeId']),
@@ -96,23 +45,26 @@ export default {
      * @params e 事件
      */
     listenNodeSizePosition(node, e) {
-      const nodeSize = node.getSize();     
-      const nodePosition = this.htVars.graphView.lp(e);
-      console.log('Node position is ', nodePosition, 'nodeType is', node.getStyle('nodeType'));
-      this.htVars.htForm.positionX.setValue(nodePosition.x);      
-      this.htVars.htForm.positionY.setValue(nodePosition.y);
-      this.htVars.htForm.sizeW.setValue(nodeSize.width);
-      this.htVars.htForm.sizeH.setValue(nodeSize.height);
-      this.initTab(node.s('nodeType'));
+      /*   const nodeSize = node.getSize();     
+      const nodePosition = graphView.lp(e);      
+      console.log('Node position is ', nodePosition, 'nodeType is', node.getStyle('nodeType'), nodeSize); */
+      /*   this.arrPS[0].x = nodePosition.x;
+      this.arrPS[0].y = nodePosition.y; */
+      this.arrPS[0].x = 1111;
+      this.$set(this.arrPS[0], 'x', '11111222');
+      this.testX = '11112222';
+      console.log(this.arrPS, this.testX);
+      /*  this.arrPS[1].width = nodeSize.width;
+      this.arrPS[1].height = nodeSize.height; */
     },
     /**
      * 
      * 监听画布图元事件信息
      */
     handleGraphViewEventListener() {
-      this.htVars.graphView.addInteractorListener((e) => {
+      graphView.addInteractorListener((e) => {
         if (e.kind === 'clickData') {
-          console.log(`${e.data}被单击`, e, 'e.size', e.data.getSize(), 'id', e.data.getId());         
+          console.log(`${e.data}被单击`, e, 'e.size', e.data.getSize(), 'id', e.data.getId(), this);         
           this.clickNode = e.data;
           this.m_editingNodeId({ id: e.data.getId() });          
           this.listenNodeSizePosition(e.data, e.event);             
@@ -120,7 +72,6 @@ export default {
           console.log(`${e.data}被双击`);
         } else if (e.kind === 'clickBackground') {
           console.log('单击背景');
-          tabModel.clear();
           this.m_editingNodeId({ id: 0 });
         } else if (e.kind === 'doubleClickBackground') {
           console.log('双击背景');

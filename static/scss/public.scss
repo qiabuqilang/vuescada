@@ -1,7 +1,12 @@
 
-$designWidth: 1440;    
+$designWidth: 1440;
+$designHeight: 900;    
 @function px2rem($px){
-	@return $px*320/$designWidth/20 + rem;
+	@return $px*$designHeight/$designWidth/20 + rem;
+}
+body,*{
+    // overflow: hidden;
+    box-sizing: border-box;
 }
 
 body > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2){  
