@@ -38,78 +38,13 @@
 </template>
 <script>
 import {mapState, mapMutations} from 'vuex';
+import scadaConfig from '@/config/scada';
 export default {
      name: 'imgHouse', 
    
     data() {
       return{
-          imgArr:[
-              {
-                  id: 1,
-                  name:"风机",
-                  img: require('@/assets/pilotlamp/ic_lamp_state1.svg'),
-                  selected: true,
-                  children: [
-                      {
-                          id:2,
-                          img: require('@/assets/pilotlamp/ic_lamp_state1.svg')
-                      },
-                      {
-                          id: 3,
-                          img: require('@/assets/pilotlamp/ic_lamp_state2.svg')
-                      },
-                      {
-                          id: 4,
-                          img: require('@/assets/pilotlamp/ic_lamp_state3.svg')
-                      },
-                      {
-                          id:5,
-                          img: require('@/assets/pilotlamp/ic_lamp_state4.svg')
-                      },
-                      {
-                          id: 6,
-                          img: require('@/assets/pilotlamp/ic_lamp_state5.svg')
-                      },
-                      {
-                          id: 7,
-                          img: require('@/assets/pilotlamp/ic_lamp_state6.svg')
-                      }
-                  ]
-              },
-               {
-                  id: 8,
-                  name:"风机",
-                  img: require('@/assets/fan/ic_fengshan_bianpin.svg'),
-                  selected: false,
-                  children: [                      
-                      {
-                          id:9,
-                          img: require('@/assets/fan/ic_fengshan_bianpin.svg')
-                      },
-                      {
-                          id: 10,
-                          img: require('@/assets/fan/ic_fengshan_gongpin.svg')
-                      },
-                      {
-                          id: 11,
-                          img: require('@/assets/fan/ic_fengshan_guzhang.svg')
-                      },
-                      {
-                          id:12,
-                          img: require('@/assets/fan/ic_fengshan_weitouru.svg')
-                      },
-                      {
-                          id: 13,
-                          img: require('@/assets/fan/ic_fengshan_yuanting.svg')
-                      },
-                      {
-                          id: 14,
-                           img: require('@/assets/fan/ic_fengshan_daiji.svg')
-                      }
-                      
-                  ]
-              }
-          ],
+          imgArr: scadaConfig.arrImgHouse,
           children: [],
           show: true
       }

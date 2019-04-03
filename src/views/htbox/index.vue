@@ -632,7 +632,7 @@ export default {
             
         }.bind(this)); 
         let node = new this.$ht.Node();       
-        this.handleGraphViewEventListener()     ;
+        // this.handleGraphViewEventListener()     ;
     },
     
 
@@ -695,6 +695,7 @@ export default {
             console.log(document.body.scrollHeight,document.body.scrollWidth);
             this.location.reload();
         };
+       
       this.htVars.graphView.enableFlow();
       this.htVars.graphView.enableDashFlow();
   }
@@ -710,6 +711,9 @@ export default {
 <style lang="scss">
     .graph{    
       width: 60% !important;
-      height: px2rem(780) !important;
+      height: px2rem(780) !important;     
+      div{
+        z-index: 999 !important;
+      }
   }
 </style>

@@ -51,6 +51,8 @@ module.exports = {
     "linebreak-style": [0 ,"error", "windows"],
     'eol-last': 'off',
     'func-names': 'off',
-    'one-var': 'off'
+    'one-var': 'off',
+    'global-require': 'off',
+    'no-param-reassign': 'off'
   }
 }

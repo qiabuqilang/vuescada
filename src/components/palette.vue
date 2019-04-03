@@ -59,7 +59,7 @@ export default {
                 node.setStyle('background',null);
                 node.setImage(require(`@/assets/${icon}`)); 
                 node.setStyle('draggable',true);
-                node.setStyle('nodeType','node');
+                node.setStyle('nodeType','standard');
                 group.addChild(node);
                 model.add(node);
             }            
@@ -142,19 +142,21 @@ export default {
     createStateNode(lp){
       let node = new this.$ht.Node();
       node.setImage(require('@/assets/pilotlamp/ic_lamp_state1.svg'));
+      node.setStyle('showName','状态显示');
       return node;
     },
-    createStandardNode(lp,paletteNode){
+    createStandardNode(lp,paletteNode){    
       let node = new this.$ht.Node();
       node.setStyle('shape.background',null);
       node.setStyle('shape.border.color','#000');
       node.setStyle('shape.border.width','2');
       node.setImage(paletteNode.getImage());
+      node.setStyle('showName',paletteNode.getName());
       node.setStyle('shape',paletteNode.getStyle('shape'));
       return node;
     },
     createYezhuNode(lp){    
-      ht.Default.setImage('yezhu',{
+      let yezhuImage = {
         width: 100,
         height: 200,
         comps:[
@@ -173,9 +175,10 @@ export default {
             background: '#617EFE'
           }
         ]
-      })
+      }
       let yezhu = new this.$ht.Node();
-      yezhu.setImage('yezhu');
+      yezhu.setImage(yezhuImage);
+      yezhu.setStyle('showName','液柱');
       return yezhu;
     },
     createLineNode(type,lp){
@@ -193,6 +196,7 @@ export default {
             1, // moveTo
             2
         ])); 
+        line.setStyle('showName','直线');
         break;
         default:
         line.setPoints(new ht.List([
@@ -206,6 +210,7 @@ export default {
         line.setSegments(new ht.List([
           1,3,3
         ]))
+        line.setStyle('showName','曲线');
         break;
       }
       line.translate(lp.x,lp.y);
@@ -214,7 +219,8 @@ export default {
     createTextNode(lp){
       let node = new this.$ht.HtmlNode();      
       node.setPosition(lp.x,lp.y);
-      node.setHtml(`<textarea name="" id="text" cols="30" rows="10" style="border: 1px solid #000;font-size:14px;" }></textarea>`);
+      node.setStyle('showName','文本');
+      node.setHtml(`<textarea name="" id="text" cols="30" rows="10" style="font-size:14px;color:#000;background: rgba(0,0,0,0);border:none;" }></textarea>`);     
       return node;
     },
     createPipeNode(lp){
@@ -224,9 +230,10 @@ export default {
         pipe.s("shape.dash", true);
         pipe.s("shape.dash.flow", true);
         pipe.s('shape.dash.width',10);
-        pipe.s("shape.dash.color", "yellow");
+        pipe.s("shape.dash.color", "#f00");
         pipe.s("shape.dash.flow.reverse",false);
-        pipe.setStyle("shape.border.color", "#000");         
+        pipe.setStyle("shape.border.color", "#000"); 
+        pipe.setStyle('showName','管道');
         pipe.setPoints(new ht.List([
                     {
                         x: 0,
@@ -258,7 +265,7 @@ export default {
          console.log('弄得is',i,':',node[i]);
       } */
       console.log(node.getStyleMap());
-    graphView.dm().add(node);
+    graphView.dm().add(node);   
     node.setPosition(lp.x, lp.y);             
     node.setStyle('nodeType',paletteNode.getStyle('nodeType'));
                
@@ -294,7 +301,7 @@ export default {
                 console.log('paletteNode',paletteNode,paletteNode.s('nodeType'),'lp is ',lp,'size is',paletteNode.getSize());
                
                 switch(paletteNode.s('nodeType')){
-                  case 'node':
+                  case 'standard':
                    node = this.createStandardNode(lp,paletteNode);
                   break;
                   case 'pipe':

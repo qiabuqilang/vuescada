@@ -22,15 +22,13 @@ import 'lib/plugin/ht-htmlnode';
 import 'lib/plugin/ht-panel';
 import 'lib/plugin/ht-live';
 // ht------------
-import $ from 'jquery';
 import 'hotcss';
-import mixins from '@/mixins';
 import store from './store';
 import App from './App';
 import router from './router';
 import '../static/scss/public.scss';
 
-Vue.mixin(mixins);
+
 Vue.config.productionTip = false;
 Vue.component(dialog.name, dialog);
 Vue.component(Button.name, Button);

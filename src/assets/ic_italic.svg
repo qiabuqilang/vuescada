@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="20px" viewBox="0 0 21 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_italic</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="08文本属性" transform="translate(-1335.000000, -422.000000)" fill="#333333" fill-rule="nonzero">
+            <g id="分组-3" transform="translate(1160.000000, 120.000000)">
+                <g id="分组-8-copy-4" transform="translate(20.000000, 297.000000)">
+                    <g id="分组-13" transform="translate(151.000000, 0.000000)">
+                        <g id="ic/italic" transform="translate(4.630000, 4.612000)">
+                            <path d="M14.8106826,5.504 L13.4407221,5.63 C12.954716,7.03 12.51071,8.43 12.0578238,9.858 L11.8402609,10.544 C11.3962548,11.944 10.9433687,13.372 10.5413627,14.772 L11.8314021,14.898 L11.676,15.388 L7,15.388 L7.15540211,14.898 L8.52536266,14.772 C8.99292863,13.386 9.44137473,11.972 9.89426088,10.544 L10.1118238,9.858 C10.5558299,8.458 11.004276,7.044 11.4247221,5.63 L10.1346826,5.504 L10.2945248,5 L14.9705248,5 L14.8106826,5.504 Z" id="I"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

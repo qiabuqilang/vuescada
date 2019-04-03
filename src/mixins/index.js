@@ -1,5 +1,3 @@
-import scada from '@/api/scada';
-import { Message } from 'element-ui';
 import { mapState, mapMutations } from 'vuex';
 
 
@@ -7,67 +5,83 @@ export default {
   name: 'mixins', 
   data() {
     return {
-      node: {},
-      testX: 100,
-      arrPS: [
-        {
+      node: {
+        id: '',
+        name: '',
+        type: '',
+        position: {
           tit: '位置',
           x: 0,
           y: 0,
         },
-        {
+        size: {
           tit: '大小',
           width: 0,
           height: 0,
         },
-      ],
+      },
+      clickNode: '',    
     };
   },
   computed: {
     ...mapState(['editingNodeId']),
   },
-  mounted() {
-    console.log('refs', this.$refs);
-    if (this.editingNodeId) {
-      this.node.name = dataModel.getDataById(this.editingNodeId).getName();
-    }
-    /*  setTimeout(() => {
-      this.listenNodeSizePosition();
-    }, 1500); */
-    // this.listenNodeSizePosition();
+  watch: {  
+    editingNodeId() {
+      if (this.editingNodeId > 0) {
+        this.node.id = this.editingNodeId;
+        this.node.name = window.dataModel.getDataById(this.editingNodeId).getStyle('showName');
+        this.node.type = window.dataModel.getDataById(this.editingNodeId).getStyle('nodeType');
+      } else {
+        this.initNodeInfo();
+      }
+      console.log('正在编辑节点信息', this.node);
+    },
+  },
+  created() {
+    
+  },
+  mounted() { 
+    this.handleGraphViewEventListener();
   },
   methods: {
     ...mapMutations(['m_editingNodeId']),
+    initNodeInfo() {
+      this.node.id = 0;
+      this.node.name = '';
+      this.node.type = '';
+      this.node.position.x = 0;
+      this.node.position.y = 0;
+      this.node.size.width = 0;
+      this.node.size.height = 0;
+    },
     /**
      * 
      * 处理图元节点移动位置和大小
      * @params node 图元节点
      * @params e 事件
      */
-    listenNodeSizePosition(node, e) {
-      /*   const nodeSize = node.getSize();     
-      const nodePosition = graphView.lp(e);      
-      console.log('Node position is ', nodePosition, 'nodeType is', node.getStyle('nodeType'), nodeSize); */
-      /*   this.arrPS[0].x = nodePosition.x;
-      this.arrPS[0].y = nodePosition.y; */
-      this.arrPS[0].x = 1111;
-      this.$set(this.arrPS[0], 'x', '11111222');
-      this.testX = '11112222';
-      console.log(this.arrPS, this.testX);
-      /*  this.arrPS[1].width = nodeSize.width;
-      this.arrPS[1].height = nodeSize.height; */
+    listenNodeSizePosition(node, e) {     
+      const nodeSize = node.getSize();     
+      const nodePosition = window.graphView.lp(e);      
+      console.log('Node position is ', nodePosition, 'nodeType is', node.getStyle('nodeType'), nodeSize);
+      this.node.position.x = nodePosition.x;
+      this.node.position.y = nodePosition.y;
+      this.node.size.width = nodeSize.width;
+      this.node.size.height = nodeSize.height;
+      console.log(this.node);
     },
     /**
      * 
      * 监听画布图元事件信息
      */
     handleGraphViewEventListener() {
-      graphView.addInteractorListener((e) => {
+      window.graphView.addInteractorListener((e) => {
         if (e.kind === 'clickData') {
           console.log(`${e.data}被单击`, e, 'e.size', e.data.getSize(), 'id', e.data.getId(), this);         
           this.clickNode = e.data;
           this.m_editingNodeId({ id: e.data.getId() });          
-          this.listenNodeSizePosition(e.data, e.event);             
+          this.listenNodeSizePosition(e.data, e.event);         
         } else if (e.kind === 'doubleClickData') {
           console.log(`${e.data}被双击`);
         } else if (e.kind === 'clickBackground') {
@@ -92,9 +106,11 @@ export default {
         } else if (e.kind === 'beginPan') {
           console.log('开始手抓图平移');
         } else if (e.kind === 'betweenPan') {
+          this.listenNodeSizePosition(this.clickNode, e.event);
           console.log('正在手抓图平移');
         } else if (e.kind === 'endPan') {
           console.log('结束手抓图平移');
+          this.initNodeInfo();
         } else if (e.kind === 'beginEditRect') {
           console.log('开始编辑图元大小和位置');
           this.listenNodeSizePosition(this.clickNode, e.event);
@@ -135,12 +151,6 @@ export default {
           console.log('鼠标停留');
         } 
       });
-    },
-    viewStyle(view) {
-      const style = view.style;
-      style.width = '100%';
-      style.height = '100%';
-      style.border = '3px solid #f00';
-    },
+    },   
   },
 };

@@ -11,13 +11,14 @@
           <htbox/>
         </div>
         <div class="right_box">
-          <position ref="position"/>
-          <tab/>
+          <position ref="position" :node="node"/>
+          <tab :node="node"/>
         </div>
       </div>
     </div>
 </template>
 <script>
+import mixin from '@/mixins';
 import titlemy from '@/components/titlemy';
 import toolbar from '@/components/toolbar';
 import palette from '@/components/palette';
@@ -26,6 +27,7 @@ import tab from '@/components/tab';
 import htbox from '@/views/htbox';
 export default {
      name: 'App', 
+     mixins: [mixin],
      components:{
        titlemy,toolbar,palette,htbox,position,tab
      },
@@ -48,12 +50,12 @@ export default {
       
     }
     .middle_box{
-      border: 10px solid #0f0;
+      // border: 10px solid #0f0;
       width: 61%;
       float: left;
     }
     .right_box{
-      border: 10px solid #00f;
+      // border: 10px solid #00f;
       width:20%;
       float:right;
     }
