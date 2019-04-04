@@ -1,7 +1,7 @@
 <template>
     <div class='App'>
       <titlemy class="titlemy"/>
-      <toolbar/>
+      <toolbar :node="node"/>
      
       <div class="main_box">
         <div class="left_box">

@@ -3,8 +3,8 @@
       <el-row class="toolbar_row">
           <el-col :span="item.func==='reduce'?2:1" v-for="item of imgArr" :key="item.img" :class="item.func==='reduce'?'reduce':''">
               <img :src="item.img" alt="" @click="handleClick(item)" :class="[item.clicked?'clicked':'']">
-              <select name="" id="" v-if="item.func === 'reduce'" class="select">
-                  <option :value="item" v-for="item of zoomArr" :key="item" :selected="item===100">{{item}}%</option>
+              <select name="" id="" v-if="item.func === 'reduce'" class="select" v-model="zoomValue" @change="handleSelect()">
+                  <option :value="item" v-for="item of zoomArr" :key="item">{{item}}%</option>
               </select>
           </el-col>         
       </el-row>
@@ -143,7 +143,23 @@ export default {
                   clicked: false
               }
           ],
-          zoomArr:zoomArr()
+          zoomArr:zoomArr(),
+          zoomValue: 100,
+          center:{x:0,y:0}
+      }
+    },
+    props:{
+      node: {
+        type: Object,
+        default: {}
+      }
+    },
+    computed:{
+       nodeId(){
+        return this.node.id;
+      },
+      nodeInfo(){
+      return window.dataModel.getDataById(this.node.id);
       }
     },
     created(){       
@@ -157,24 +173,35 @@ export default {
           item.clicked = !item.clicked;
             switch(item.func){
                 case 'historyBack':
-                this.historyBack();
+                  window.historyManager.undo();
+                break;
+                case 'historyForward':
+                  window.historyManager.redo();
                 break;
                 case 'showGrid': 
                 if(item.clicked){
                   window.graphView.addBottomPainter(window.GridPainter);
                 }else{
                  window.graphView.removeBottomPainter(window.GridPainter);
-                }
-                this.showGrid();
+                }               
+                break;
+                case 'reduce':              
+                 window.graphView.zoomOut(true);
+                break;
+                case 'amplify':
+                 window.graphView.zoomIn(true);
+                break;
+                case 'lock':
+                  window.graphView.setDisabled(true);
+                break;
+                case 'unlock':
+                  window.graphView.setDisabled(false);
+                  
                 break;
             }
-        },
-        showGrid(){
-         
-          
-        },
-        historyBack(){
-          
+        }, 
+        handleSelect(){
+            window.graphView.setZoom(parseInt(this.zoomValue/100),true,this.center);
         }
     }
 }
