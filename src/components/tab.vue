@@ -128,61 +128,61 @@
 
     <div class="pane event" v-else>
         <div v-if="node.type==='pipe'">
-            <select name="" id="">
+            <select name="" id="" v-model="pipe.event.var" @change="handleEvent('pipe','var',pipe.event.var)">
             <option value="">请选择变量</option>
-            <option value="">逆向</option>
+            <option v-for="item of supportedMeasurements" :key="item" :value="item">{{item}}</option>
             </select>
              <el-row>
           <el-col :span="12">动态：</el-col>
           <el-col :span="12">
-            <input type="number">
+            <input type="number" v-model="pipe.event.max" @change="handleEvent('pipe','max',pipe.event.max)">
           </el-col>
         </el-row>
          <el-row>
           <el-col :span="12">静态：</el-col>
           <el-col :span="12">
-            <input type="number">
+            <input type="number" v-model="pipe.event.min" @change="handleEvent('pipe','min',pipe.event.min)">
           </el-col>
         </el-row>
         </div>
 
         <div v-if="node.type==='yezhu'">
-            <select name="" id="">
+            <select name="" id="" v-model="yezhu.event.var" @change="handleEvent('yezhu','var',yezhu.event.var)">
             <option value="">请选择变量</option>
-            <option value="">逆向</option>
+            <option :value="item" v-for="item of supportedMeasurements" :key="item">{{item}}</option>
             </select>
              <el-row>
-          <el-col :span="12">最小值：</el-col>
+          <el-col :span="12">最大值：</el-col>
           <el-col :span="12">
-            <input type="number">
+            <input type="number" v-model="yezhu.event.max" @change="handleEvent('yezhu','max',yezhu.event.max)">
           </el-col>
         </el-row>
          <el-row>
-          <el-col :span="12">最大值：</el-col>
+          <el-col :span="12">最小值：</el-col>
           <el-col :span="12">
-            <input type="number">
+            <input type="number" v-model="yezhu.event.min" @change="handleEvent('yezhu','min',yezhu.event.min)">
           </el-col>
         </el-row>
         </div>
 
         <div v-if="node.type==='text'">
-           <select name="" id="" v-model="text.event.var">
+           <select name="" id="" v-model="text.event.var" @change="handleEvent('text','var',text.event.var)">
             <option value="">请选择变量</option>
-            <option :value="item.id" v-for="item of supportedMeasurements" :key="item">{{item}}</option>
+            <option :value="item" v-for="item of supportedMeasurements" :key="item">{{item}}</option>
             </select>
         </div>
 
         <div v-if="node.type==='state'" class="state">
-           <select name="" id="">
+           <select name="" id="" v-model="state.event.var" @change="handleEvent('state','var',state.event.var)">
             <option value="">请选择变量</option>
-            <option value="">逆向</option>
+            <option :value="item" v-for="item of supportedMeasurements" :key="item">{{item}}</option>
             </select>
-            <el-row v-for="item of stateEvent" :key="item.img" style="margin:15px">
+            <el-row v-for="(item,index) of stateEvent" :key="item.img" style="margin:15px">
               <el-col :span="8">
                 <img :src="item.img" alt="" class="img_event">
               </el-col>
               <el-col :span="16">
-                <input type="number">
+                <input type="number" v-model="state.event.imgVar[index]" @change="handleEvent('state',`imgVar_${item.id}`,state.event.imgVar[index])">
               </el-col>
             </el-row>
         </div>
@@ -282,10 +282,20 @@ export default {
         blockLength:'',
         blockSpacing: '',
         dashColor: '',
-        flowDirection:''
+        flowDirection:'',
+        event:{
+          var:'',
+          max:'',
+          min:''
+        }
       },
       yezhu:{
-        background: ''
+        background: '',
+        event:{
+          var: '',
+          max:'',
+          min:''
+        }
       },
       text:{
         fontSize: '',
@@ -295,6 +305,12 @@ export default {
         textDecoration: '',
         event:{
           var:''
+        }
+      },
+      state:{
+        event:{
+          var:'',
+          imgVar:[]
         }
       },
       arrFontStyle: [
@@ -372,6 +388,15 @@ export default {
       }
       
     },
+    handleEvent(type,key,value){
+      if(!this.nodeInfo){
+        return '';
+      }
+      console.log(type,key,value);
+      this.nodeInfo.setStyle(`binding_${key}`,value)
+      console.log('after binding is',this.nodeInfo);
+    },
+
     changeFontStyle(item){
       console.log(item);
       item.clicked = !item.clicked;      
@@ -424,7 +449,7 @@ export default {
   font-size: px2rem(14);
   color: #333333;
   height: px2rem(607);
-  background: #DADADA;
+  background: $mainBgColor;
   .el-radio-group {
     margin-top: px2rem(30);
   }

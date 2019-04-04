@@ -21,6 +21,8 @@ import 'lib/plugin/ht-dialog';
 import 'lib/plugin/ht-htmlnode';
 import 'lib/plugin/ht-panel';
 import 'lib/plugin/ht-live';
+
+import 'lib/js/GridPainter';
 // ht------------
 import 'hotcss';
 import store from './store';

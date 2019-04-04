@@ -361,7 +361,7 @@ export default {
     .palette-content{       
         width: px2rem(248);
         height: px2rem(780);
-        background: #DADADA;
+        background: $mainBgColor;
         .palette-item{           
             width: px2rem(56);
             padding: 0px;

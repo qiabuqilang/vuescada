@@ -18,7 +18,7 @@
 import { mapMutations, mapState } from "vuex";
 import types from '@/store/mutation-types';
 import {Message, MessageBox} from 'element-ui';
-import device from '@/api/device';
+
 
 import { setTimeout } from 'timers';
 import imgHouse from '@/components/imgHouse';
@@ -610,7 +610,7 @@ export default {
         // this.view = upSplitView.getView();
         this.view = this.htVars.graphView.getView();
         this.view.className = 'graph' ;
-        // this.view.style.border="10px solid #000";
+        
         this.htVars.historyManager.clear();
         // this.htVars.graphView.setEditable(true);
         var editInteractor = new ht.graph.XEditInteractor(this.htVars.graphView);
@@ -632,7 +632,7 @@ export default {
             
         }.bind(this)); 
         let node = new this.$ht.Node();       
-        // this.handleGraphViewEventListener()     ;
+       
     },
     
 
@@ -660,31 +660,11 @@ export default {
             }
         });
     },
-    /**
-     * 
-     * 获取设备列表
-     */
-    getDeviceList(){
-        device.getDeviceList({'type':'c8y_MQTTDevice'}).then(res=>{
-            if(res.data.managedObjects.length>0){
-                console.log(res.data.managedObjects);
-                device. getSupportedMeasurements(166143,'').then(res=>{
-                   if(res.data.c8y_SupportedSeries.length>0){
-                    //    this.supportedMeasurements = res.data.c8y_SupportedSeries;
-                     res.data.c8y_SupportedSeries.map(item=>{
-                      
-                       this.supportedMeasurements.push(item);
-                     })
-                   }
-                })
-            }
-        })
-    }
+    
   },
 
   created() {    
-    console.log(this.showImageHouse);
-    this.getDeviceList();
+    console.log(this.showImageHouse);   
     this.makeGraph();
   },
   mounted() {

@@ -2,7 +2,7 @@
     <div class='toolbar'>
       <el-row class="toolbar_row">
           <el-col :span="item.func==='reduce'?2:1" v-for="item of imgArr" :key="item.img" :class="item.func==='reduce'?'reduce':''">
-              <img :src="item.img" alt="" @click="handleClick(item.func)">
+              <img :src="item.img" alt="" @click="handleClick(item)" :class="[item.clicked?'clicked':'']">
               <select name="" id="" v-if="item.func === 'reduce'" class="select">
                   <option :value="item" v-for="item of zoomArr" :key="item" :selected="item===100">{{item}}%</option>
               </select>
@@ -104,54 +104,77 @@ export default {
           imgArr:[
               {
                   img: require('@/assets/ic_chexiao.svg'),
-                  func: 'historyBack'
+                  func: 'historyBack',
+                  clicked: false
               },
               {
                   img: require('@/assets/ic_qianjin.svg'),
-                  func: 'historyForward'
+                  func: 'historyForward',
+                  clicked: false
               },
               {
                   img: require('@/assets/ic_save.svg'),
-                  func: 'save'
+                  func: 'save',
+                  clicked: false
               },
               {
                   img: require('@/assets/ic_suoxiao.svg'),
-                  func: 'reduce'
+                  func: 'reduce',
+                  clicked: false
               },
               {
                   img: require('@/assets/ic_fangda.svg'),
-                  func: 'amplify'
+                  func: 'amplify',
+                  clicked: false
               },
               {
                   img: require('@/assets/ic_grid.svg'),
-                  func: 'showGrid'
+                  func: 'showGrid',
+                  clicked: false
               },
               {
                   img: require('@/assets/ic_lock.svg'),
-                  func: 'lock'
+                  func: 'lock',
+                  clicked: false
               },
               {
                   img: require('@/assets/ic_unlock.svg'),
-                  func: 'unlock'
+                  func: 'unlock',
+                  clicked: false
               }
           ],
           zoomArr:zoomArr()
-          
       }
     },
-    created(){
-        console.log(this.zoomArr);
+    created(){       
+      
+    },
+    mounted(){
+       window.GridPainter = new ht.graph.GridPainter(window.graphView);
     },
     methods:{
-        handleClick(name){
-            switch(name){
+        handleClick(item){
+          item.clicked = !item.clicked;
+            switch(item.func){
                 case 'historyBack':
-                this.historyBack()
+                this.historyBack();
+                break;
+                case 'showGrid': 
+                if(item.clicked){
+                  window.graphView.addBottomPainter(window.GridPainter);
+                }else{
+                 window.graphView.removeBottomPainter(window.GridPainter);
+                }
+                this.showGrid();
                 break;
             }
         },
+        showGrid(){
+         
+          
+        },
         historyBack(){
-            alert(11111);
+          
         }
     }
 }
@@ -161,7 +184,7 @@ export default {
     width: 100%;
     height: px2rem(60);
     line-height: px2rem(60);
-    background: #DADADA;   
+    background: $mainBgColor;   
     text-align: center;
     padding-left:px2rem(50);
     .toolbar_row{
@@ -175,6 +198,9 @@ export default {
         border: 1px dashed #000;       
         &:hover{
             border: 1px solid #617EFE;
+        }
+        &.clicked{
+          background: $mainBgColor;
         }
     }
     .reduce{
