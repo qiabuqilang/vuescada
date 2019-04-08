@@ -1,13 +1,5 @@
 <template>
     <div class='htbox' ref="htbox">
-     <el-dialog
-      title="预览"
-      :visible.sync="showPreview"
-     fullscreen append-to-body center
-      >
-      <div class="showPreview" ref="showPreview"></div>      
-    </el-dialog>
-
     <img-house class="imgHouse" v-if="showImageHouse"/>
     </div>
 </template>

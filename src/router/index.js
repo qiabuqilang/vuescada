@@ -10,7 +10,7 @@ export default new Router({
     {
       path: '/',
       name: 'htbox',
-      component: () => import('@/views/htbox'),
+      component: () => import('@/views/htbox/index'),
      
     },
     {
@@ -21,7 +21,7 @@ export default new Router({
     {
       path: '/preview',
       name: 'preview',
-      component: () => import('@/views/preview'),
+      component: () => import('@/views/preview/index'),
     },
     {
       path: '/img',
