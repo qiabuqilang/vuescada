@@ -220,7 +220,7 @@ export default {
       let node = new this.$ht.HtmlNode();      
       node.setPosition(lp.x,lp.y);
       node.setStyle('showName','文本');
-      node.setHtml(`<textarea name="" id="text" cols="30" rows="10" style="font-size:14px;color:#000;background: rgba(0,0,0,0);border:none;" }></textarea>`);     
+      node.setHtml(`<textarea name="" id="text" cols="30" rows="10" style="font-size:14px;color:#000;background: rgba(0,0,0,0);" }></textarea>`);     
       return node;
     },
     createPipeNode(lp){
@@ -265,7 +265,7 @@ export default {
          console.log('弄得is',i,':',node[i]);
       } */
       console.log(node.getStyleMap());
-    graphView.dm().add(node);   
+    window.graphView.dm().add(node);   
     node.setPosition(lp.x, lp.y);             
     node.setStyle('nodeType',paletteNode.getStyle('nodeType'));
                

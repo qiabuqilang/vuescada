@@ -40,8 +40,7 @@
 import {mapState, mapMutations} from 'vuex';
 import scadaConfig from '@/config/scada';
 export default {
-     name: 'imgHouse', 
-   
+    name: 'imgHouse', 
     data() {
       return{
           imgArr: scadaConfig.arrImgHouse,
@@ -106,7 +105,7 @@ export default {
 <style scoped lang='scss'>
 .imgHouse{
     .box{
-        border: 1px solid red;
+        
         overflow: hidden;   
           background: #FFFFFF;
           .el-row{             
@@ -126,8 +125,6 @@ export default {
         .left{
             float: left;
             width: 724px;
-            
-            border: 1px solid #0f0;
             .selected{
                 width: 100px;
                 height: 100px;

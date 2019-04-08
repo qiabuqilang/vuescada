@@ -33,18 +33,17 @@ export default {
         graphView: "",
         dataModel: "",       
         historyManager: "",
-      },
-      view: '', 
+      },     
+      view: '',
       deviceType:'c8y_MQTTDevice'
     };
   },
   computed: {
-    ...mapState([{ htstate: "ht" },'showImageHouse','graphView'])
+    ...mapState(['showImageHouse'])
   },
   methods: {
     ...mapMutations([
-      'm_showImageHouse',
-      'm_graphView'
+      'm_showImageHouse'
     ]),   
 
    /**
@@ -54,8 +53,7 @@ export default {
         this.htVars.graphView = window.graphView = new this.$ht.graph.GraphView();     
         this.htVars.dataModel = window.dataModel = this.htVars.graphView.getDataModel();
         this.htVars.historyManager= window.historyManager = new this.$ht.HistoryManager(window.dataModel);
-        this.htVars.graphView.adjustHtmlNodeIndex = true;
-   
+        this.htVars.graphView.adjustHtmlNodeIndex = true;   
         this.view = this.htVars.graphView.getView();
         this.view.className = 'graph' ;
         

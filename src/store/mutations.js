@@ -10,5 +10,11 @@ const mutations = {
   [types.GRAPH_VIEW](state, payload) {
     state.graphView = payload.graphView;
   },
+  [types.SAVE_PREVIEW_DATA](state, payload) {
+    state.previewData = payload.previewData;
+  },
+  [types.SHOW_PREVIEW](state, payload) {
+    state.showPreview = payload.showPreview;
+  },
 };
 export default mutations;

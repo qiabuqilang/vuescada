@@ -9,32 +9,57 @@
              <h2 class="title">组态设计</h2>                 
          </el-col>
         <el-col :span="5" class="right">
-            <div v-for="item of rightArr" :key="item.icon">
+            <div v-for="item of rightArr" :key="item.icon" @click="handleClick(item.func)">
                 <img :src="item.icon" alt="" class="icon">
                 <span>{{item.title}}</span>
             </div>
         </el-col>
      </el-row>
+     <previewBox v-if="showPreview"></previewBox>
     </div>
 </template>
 <script>
+import { mapState, mapMutations} from 'vuex';
+import previewBox from '@/components/previewBox';
 export default {
-     name: 'titlemy', 
+    name: 'titlemy',     
+    components:{
+        previewBox
+    },
     data() {
       return{
           rightArr:[
               {
                   icon: require('@/assets/ic_yulan.svg'),
-                  title: '预览'
+                  title: '预览',
+                  func: 'preview'
               },
               {
                   icon: require('@/assets/ic_fabu.svg'),
-                  title: '发布'
+                  title: '发布',
+                  func: 'publish'
               }
           ]
       }
     },
-    methods:{}
+    computed:{
+        ...mapState(['showPreview','previewData'])
+    },
+    methods:{
+        ...mapMutations(['m_showPreview','m_savePreviewData']),
+        handleClick(type){
+            switch(type){
+                case 'preview':
+                    console.log(this.showPreview);
+                    this.m_showPreview({showPreview: true});
+                    this.m_savePreviewData({previewData: window.dataModel.serialize()})
+                    console.log(this.showPreview,this.previewData);
+                break;
+                case 'publish':
+                break;
+            }
+        },
+    }
 }
 </script>
 <style scoped lang='scss'>

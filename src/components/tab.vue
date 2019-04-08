@@ -345,11 +345,11 @@ export default {
     getDeviceList(){
         device.getDeviceList({'type':'c8y_MQTTDevice'}).then(res=>{
             if(res.data.managedObjects.length>0){
-                console.log(res.data.managedObjects);
+                console.log('根据类型获取设备列表',res.data.managedObjects);
                 device. getSupportedMeasurements(166143,'').then(res=>{
-                   if(res.data.c8y_SupportedSeries.length>0){                   
-                     res.data.c8y_SupportedSeries.map(item=>{
-                      
+                  console.log('根据设备ID获取支持测量值',res.data.c8y_SupportedMeasurements);
+                   if(res.data.c8y_SupportedMeasurements.length>0){                   
+                     res.data.c8y_SupportedMeasurements.map(item=>{
                        this.supportedMeasurements.push(item);
                      })
                      console.log('supportedMeasurements',this.supportedMeasurements);

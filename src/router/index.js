@@ -21,7 +21,7 @@ export default new Router({
     {
       path: '/preview',
       name: 'preview',
-      component: () => import('@/views/preview/preview'),
+      component: () => import('@/views/preview'),
     },
     {
       path: '/img',

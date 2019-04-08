@@ -12,85 +12,7 @@
 </template>
 <script>
 export default {
-     name: 'toolbar', 
-    /* 
-     toolbarItems: [
-        {
-          icon: 'zoomIn',
-          label: '放大',
-          action: function () {
-            console.log(this);
-            this.htVars.graphView.zoomIn(true);
-          }.bind(this),
-        },
-        {
-          icon: 'zoomOut',
-          label: '缩小',
-          action: function () {
-            this.htVars.graphView.zoomOut(true);
-          }.bind(this),
-        },
-        {
-          icon: 'fitContent',
-          label: '适应',
-          action: function () {
-            this.htVars.graphView.fitContent(true);
-          }.bind(this),
-        },
-        
-        'separator',
-        {
-          label: '预览',
-          action: function () {          
-            this.showPreview = true;
-            setTimeout(() => {
-              const dataModel = new this.$ht.DataModel(),
-                graphView = new this.$ht.ht.graph.GraphView(dataModel),
-                view = graphView.getView();
-              this.viewStyle(view);
-              this.$refs.showPreview.appendChild(view);             
-              dataModel.deserialize(this.htVars.dataModel.serialize());
-              graphView.enableFlow();
-              graphView.enableDashFlow();
-              graphView.setDisabled(true);
-            }, 1000);
-          }.bind(this),
-        },
-        {
-          label: '保存',
-          action: function () {
-            console.log(scada);
-            const data = { 
-              type: 'saveScada',
-              scadaString: JSON.stringify(this.htVars.dataModel.serialize()),
-              deviceType: this.deviceType,
-            };
-            scada.saveScada('/inventory/managedObjects', '', data).then((res) => {
-              console.log(res);
-              if (res.data.id > 0) {
-                Message({
-                  message: '保存成功',
-                  type: 'success',
-                });
-              } else {
-                Message({
-                  message: '保存失败',
-                  type: 'error',
-                });
-              }
-            });
-          }.bind(this),
-        },
-        {
-          label: '真实使用',
-          action: function () {
-            this.$router.push({
-              path: '/preview',
-            });
-          }.bind(this),
-        },
-      ],
-    */
+     name: 'toolbar',     
     data() {
       const zoomArr = function(){
           let arr = ['10','50'];
@@ -192,11 +114,16 @@ export default {
                  window.graphView.zoomIn(true);
                 break;
                 case 'lock':
-                  window.graphView.setDisabled(true);
+                  // window.graphView.setDisabled(true);
+                 /*  console.log('before move',window.dataModel.getSiblings(this.nodeId))
+                  window.dataModel.moveDown(this.nodeInfo);
+                  console.log('after move',window.dataModel.getSiblings(this.nodeId)); */
+                  console.log('getLayer is',this.nodeInfo.getLayer());
+                  // console.log('setLayer is',this.nodeInfo.setLayer(99));
+                  console.log('getLayer is',this.nodeInfo.getLayer());
                 break;
                 case 'unlock':
-                  window.graphView.setDisabled(false);
-                  
+                  window.graphView.setDisabled(false);                  
                 break;
             }
         }, 
