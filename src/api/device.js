@@ -10,10 +10,7 @@ const device = {
       params,
     });
   },
-  /* 
-  带d:https://xiayuanchun.quarkioe.cn/inventory/managedObjects/166143/supportedSeries?nocache=7782224025605737 
-  不带d:https://xiayuanchun.quarkioe.cn/inventory/managedObjects/166143/supportedMeasurements?nocache=11445009626240443
-  */
+
   getSupportedMeasurements(deviceId, params) {
     return request({
       methods: 'get',

@@ -1,0 +1,15 @@
+
+$designWidth: 1440;
+$designHeight: 900;    
+@function px2rem($px){
+	@return $px*$designHeight/$designWidth/20 + rem;
+}
+$mainBgColor: #F7F7F7;
+body,*{
+    // overflow: hidden;
+    box-sizing: border-box;
+}
+
+body > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2){  
+    z-index: 2 !important;  
+}

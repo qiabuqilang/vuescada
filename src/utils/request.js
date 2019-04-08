@@ -3,10 +3,7 @@ import { Message } from 'element-ui';
 
 
 const tcy8 = sessionStorage.getItem('_tcy8');
-Message({
-  type: 'warning',
-  message: `c8y is ${tcy8}?若没有默认使用xiayuanchun`,
-});
+
 const serviceConfig = tcy8 ? {
   baseURL: process.env.BASE_API,
   timeout: 5000,
@@ -26,8 +23,8 @@ const serviceConfig = tcy8 ? {
     
   },
   auth: {
-    username: 'xiayuanchun',
-    password: 'hello@123',
+    username: '',
+    password: '',
   },
 };
 
