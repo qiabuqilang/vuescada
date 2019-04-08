@@ -12,24 +12,7 @@ export default {
       deviceId: '166143',
       data: "",
       viewPreview: "",
-      ws: new WebSocket("wss://xiayuanchun.quarkioe.cn/cep/realtime"),
-      handshake: {
-        advice: {
-          timeout: 60000,
-          interval: 0
-        },
-        channel: "/meta/handshake",
-        ext: {
-          "com.cumulocity.authn": {
-            token: window.btoa("xiayuanchun/xiayuanchun:hello@123")
-          }
-        },
-        id: "1",
-        minimumVersion: "1.0",
-        supportedConnectionTypes: ["ws", "long-polling"],
-        version: "1.0"
-      },
-      wsdata: ""
+      
     };
   },
   computed: {
@@ -71,47 +54,14 @@ export default {
       graphView.enableDashFlow();
       graphView.setDisabled(true);
     },
-    subscribe(sub, id) {
-      return {
-        channel: "/meta/subscribe",
-        clientId: this.wsdata.clientId,
-        id: id,
-        subscription: sub
-      };
-    },
-    handleWs() {
-      this.ws.onopen = () => {
-        this.ws.send(JSON.stringify(this.handshake));
-      };
-      this.ws.onmessage = evt => {
-        console.log("收到信息为", evt);
-        this.wsdata = JSON.parse(evt.data)[0];
-        console.log(this.wsdata);
-        if (this.wsdata.successful && this.wsdata.id === "1") {
-          let connect = {
-            advice: {
-              timeout: 0
-            },
-            channel: "/meta/connect",
-            clientId: this.wsdata.clientId,
-            connectionType: "websocket",
-            id: "2"
-          };
-          this.ws.send(JSON.stringify(connect));
-          this.ws.send(JSON.stringify(this.subscribe(`/measurements/${this.deviceId}`, "3")));
-        }
-      if(typeof(this.wsdata.data) === 'object' && this.wsdata.id > 3){
-            this.handleReDraw(this.wsdata);
-        }
-      };
-    },
+    
     handleReDraw(wsdata){
         console.log('handleReDraw',wsdata);
         this.data.d.map(item=>{
             if(item.s.binding_var === wsdata.type){
                 switch(item.s.nodeType){
                     case 'yezhu':
-                    
+
                     break;
                     case 'text':
                     break;
