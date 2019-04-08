@@ -19,29 +19,6 @@ export default {
     ...mapState(["previewData"])
   },
   methods: {
-    getAsyncGraph() {
-      scada
-        .getScada("/inventory/managedObjects", {
-          query: `$filter=(type eq 'saveScada' and deviceType eq '${
-            this.deviceType
-          }')$orderby=creationTime desc`
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.managedObjects.length > 0) {
-            console.log(JSON);
-            this.data = JSON.parse(res.data.managedObjects[0].scadaString);
-            console.log(this.data);
-            let dataModel = new ht.DataModel(),
-              graphView = new ht.graph.GraphView(dataModel);
-            this.viewPreview = graphView.getView();
-            dataModel.deserialize(this.data);
-            graphView.enableFlow();
-            graphView.enableDashFlow();
-            graphView.setDisabled(true);
-          }
-        });
-    },
     previewGraph() {
       console.log("previewData is ", this.previewData);
       let dataModel = new ht.DataModel(),
@@ -61,7 +38,6 @@ export default {
             if(item.s.binding_var === wsdata.type){
                 switch(item.s.nodeType){
                     case 'yezhu':
-
                     break;
                     case 'text':
                     break;
@@ -77,11 +53,9 @@ export default {
   created() {
     this.data = Object.assign(this.previewData,{});
     this.previewGraph();
-    // this.handleWs();
+  
   },
   mounted() {
-    // data: "[{"data":{"realtimeAction":"CREATE","data":{"time":"2019-04-08T15:00:03.491+08:00","id":"10323400","self":"http://xiayuanchun.quarkioe.cn/measurement/measurements/10323400","source":{"id":"166143","self":"http://xiayuanchun.quarkioe.cn/inventory/managedObjects/166143"},"type":"yali","yali":{"d":{"unit":"mp","value":1}}}},"channel":"/measurements/166143","id":"1704226"}]"
-
     console.log("routes query", this.$route.query);
     this.$refs.preview.appendChild(this.viewPreview);
   },
