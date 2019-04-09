@@ -114,13 +114,7 @@ export default {
                  window.graphView.zoomIn(true);
                 break;
                 case 'lock':
-                  // window.graphView.setDisabled(true);
-                 /*  console.log('before move',window.dataModel.getSiblings(this.nodeId))
-                  window.dataModel.moveDown(this.nodeInfo);
-                  console.log('after move',window.dataModel.getSiblings(this.nodeId)); */
-                  console.log('getLayer is',this.nodeInfo.getLayer());
-                  // console.log('setLayer is',this.nodeInfo.setLayer(99));
-                  console.log('getLayer is',this.nodeInfo.getLayer());
+                  window.graphView.setDisabled(true);
                 break;
                 case 'unlock':
                   window.graphView.setDisabled(false);                  
@@ -167,7 +161,7 @@ export default {
         select{
         float: right;
         border: 1px solid #000;
-        margin-top: px2rem(12);
+        height: px2rem(30);
         }
     }
   

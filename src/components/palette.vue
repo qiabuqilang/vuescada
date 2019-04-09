@@ -12,6 +12,56 @@ export default {
         view: '',
         lineNode:[{name:'直线',icon:'ic_line.svg',lineType:'straight'},{name:'曲线',icon:'ic_curve.svg',lineType:'curve'}],
         standardNode : [{name:'矩形',style:'rect',icon: 'ic_rectangle.svg'}, {name:'圆形',style:'circle',icon:'ic_circle.svg'}, {name:'三角形',style:'triangle',icon:'ic_triangle.svg'}, {name:'多边形',style:'hexagon',icon: 'ic_polygon.svg'}],
+        imgNode:[
+          {
+            name:'容器',
+            icon: 'ic_rongqi_big.png'
+          },
+          {
+            name: '电磁流量计',
+            icon: 'ic_dianci_big.png'
+          },
+          {
+            name: '提升泵',
+            icon: 'ic_beng_big.png'
+          },
+          {
+            name :'风机',
+            icon: 'ic_fengji_big.png'
+          },
+          {
+            name: '底座',
+            icon: 'dizuo.png'
+          },
+          /* {
+            name: '控制柜',
+            icon: 'kongzhigui.png'
+          },
+          {
+            name: '水泵1',
+            icon: 'shueibeng1.png'
+          },
+          {
+            name:'水管1',
+            icon: 'shuiguan1.png'
+          },
+          {
+            name:'水管2',
+            icon: 'shueiguan2.png'
+          },
+          {
+            name:'水箱',
+            icon: 'shueixiang.png'
+          },
+          {
+            name: '稳压泵',
+            icon: 'wenyabeng.png'
+          },
+          {
+            name: '压力罐',
+            icon: 'yaliguan.png'
+          } */
+        ]
       }
     },
     created(){
@@ -30,6 +80,28 @@ export default {
      * 
      */
     initPaletteModel(model) {
+     
+     this.createStandardGroup(model);
+     this.createWaterGroup(model);
+        },
+      createElecGroup(model){
+        let group = new this.$ht.Group();
+        group.setName('电力系统');
+       
+        model.add(group);
+      },
+      createFoodGroup(model){
+        let group = new this.$ht.Group();
+        group.setName('食品加工');       
+        model.add(group);
+      },
+      createWaterGroup(model){
+        let group = new this.$ht.Group();
+        group.setName('水务处理');
+        this.createPaletteImgNode(group,model);
+        model.add(group);
+      },
+      createStandardGroup(model){
       let group = new this.$ht.Group();
       group.setName("标准控件");
       group.setExpanded(true);
@@ -41,8 +113,19 @@ export default {
       this.createPaletteYezhuNode(group,model);    
       this.createPaletteStateNode(group,model);
       model.add(group);
-     
-        },
+      },
+      createPaletteImgNode(group,model){
+         for (let i = 0; i < this.imgNode.length; i++) {
+                let node = new ht.Node();
+                let icon = this.imgNode[i].icon;               
+                node.setName(this.imgNode[i].name);
+                node.setImage(require(`@/assets/${icon}`)); 
+                node.setStyle('draggable',true);
+                node.setStyle('nodeType','img');
+                group.addChild(node);
+                model.add(node);
+            }            
+      },
         /**
      * 创建标准图元节点
      * @param group 图元节点所属分组
@@ -155,6 +238,7 @@ export default {
       node.setStyle('shape',paletteNode.getStyle('shape'));
       return node;
     },
+
     createYezhuNode(lp){    
       let yezhuImage = {
         width: 100,
@@ -170,7 +254,11 @@ export default {
           },
           {
             type: 'shape',
-            points:[0,200,0,100,100,100,100,200],
+            // points:[0,200,0,100,100,100,100,200],
+            points: {
+              value: [0,200,0,100,100,100,100,200],
+              func: 'style@drawPoints'
+            },
             segments:[1,2,2,2,5],
             background: '#617EFE'
           }
@@ -178,6 +266,7 @@ export default {
       }
       let yezhu = new this.$ht.Node();
       yezhu.setImage(yezhuImage);
+      yezhu.setStyle('drawPoints',[0,200,0,150,100,150,100,200])
       yezhu.setStyle('showName','液柱');
       return yezhu;
     },
@@ -220,7 +309,7 @@ export default {
       let node = new this.$ht.HtmlNode();      
       node.setPosition(lp.x,lp.y);
       node.setStyle('showName','文本');
-      node.setHtml(`<textarea name="" id="text" cols="30" rows="10" style="font-size:14px;color:#000;background: rgba(0,0,0,0);" }></textarea>`);     
+      node.setHtml(`<textarea name="" id="text" cols="30" rows="10" style="font-size:14px;color:#000;background: rgba(0,0,0,0);" }></textarea>`);  
       return node;
     },
     createPipeNode(lp){
@@ -256,18 +345,23 @@ export default {
         pipe.translate(lp.x, lp.y);
         return pipe;
     },
+     createImgNode(lp,paletteNode){    
+      let node = new this.$ht.Node();
+      node.setImage(paletteNode.getImage());
+      node.setStyle('showName',paletteNode.getName());    
+      return node;
+    },
        /**
      * 按类型将图元放入画布之中
      */
-    dropNodebyType(node,paletteNode,lp){
-     
+    dropNodebyType(node,paletteNode,lp){     
     /*   for(let i in node){
          console.log('弄得is',i,':',node[i]);
       } */
       console.log(node.getStyleMap());
-    window.graphView.dm().add(node);   
-    node.setPosition(lp.x, lp.y);             
-    node.setStyle('nodeType',paletteNode.getStyle('nodeType'));
+      window.graphView.dm().add(node);   
+      node.setPosition(lp.x, lp.y);             
+      node.setStyle('nodeType',paletteNode.getStyle('nodeType'));
                
     },
       /**
@@ -318,6 +412,9 @@ export default {
                   break;
                   case 'state':
                     node = this.createStateNode(lp);
+                  break;
+                  case 'img':
+                    node = this.createImgNode(lp,paletteNode);
                   break;
                 }
                 this.dropNodebyType(node,paletteNode,lp);
