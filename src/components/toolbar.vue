@@ -161,7 +161,7 @@ export default {
         select{
         float: right;
         border: 1px solid #000;
-        margin-top: px2rem(12);
+        height: px2rem(30);
         }
     }
   

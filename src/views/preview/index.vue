@@ -4,6 +4,7 @@
 <script>
 import scada from "@/api/scada";
 import { mapState, mapMutations } from "vuex";
+import scadaConfig from '@/config/scada';
 export default {
   name: "preview",
   data() {
@@ -32,26 +33,9 @@ export default {
       graphView.setDisabled(true);
     },
     
-    handleReDraw(wsdata){
-        console.log('handleReDraw',wsdata);
-        this.data.d.map(item=>{
-            if(item.s.binding_var === wsdata.type){
-                switch(item.s.nodeType){
-                    case 'yezhu':
-                    break;
-                    case 'text':
-                    break;
-                    case 'pipe':
-                    break;
-                    case 'state':
-                    break;
-                }
-            }
-        })
-    }
+   
   },
-  created() {
-    this.data = Object.assign(this.previewData,{});
+  created() {   
     this.previewGraph();
   
   },
@@ -59,8 +43,8 @@ export default {
     console.log("routes query", this.$route.query);
     this.$refs.preview.appendChild(this.viewPreview);
   },
-  destroyed(){
-      this.ws.close();
+  destroyed() {
+    this.ws.close();
   }
 };
 </script>
@@ -68,7 +52,7 @@ export default {
 .preview {
   width: 100%;
   height: px2rem(500);
-  border: 1px solid red;
+ 
 }
 </style>
 <style lang="scss">
