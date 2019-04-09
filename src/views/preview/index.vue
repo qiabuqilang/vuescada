@@ -13,27 +13,24 @@ export default {
       deviceId: '166143',
       data: "",
       viewPreview: "",
-      
+      dataModel:'',
+      graphView:''
     };
   },
   computed: {
     ...mapState(["previewData"])
   },
   methods: {
-    previewGraph() {
-      console.log("previewData is ", this.previewData);
-      let dataModel = new ht.DataModel(),
-        graphView = new ht.graph.GraphView(dataModel);
-      this.viewPreview = graphView.getView();
-      this.viewPreview.className = "viewPreview";
-      dataModel.deserialize(this.data);
-      graphView.setZoomable(false);
-      graphView.enableFlow();
-      graphView.enableDashFlow();
-      graphView.setDisabled(true);
-    },
-    
+    previewGraph() {    
+      this.dataModel = Object.assign(window.dataModel,{});
+      this.graphView = new ht.graph.GraphView(this.dataModel);  
+      this.viewPreview = this.graphView.getView();
+      this.viewPreview.className = "viewPreview"; 
+      this.data = this.dataModel.getDatas();   
+      console.log('this.data',this.data,this.dataModel,this.graphView);
    
+ 
+  },
   },
   created() {   
     this.previewGraph();
@@ -42,10 +39,15 @@ export default {
   mounted() {
     console.log("routes query", this.$route.query);
     this.$refs.preview.appendChild(this.viewPreview);
+    this.graphView.setZoomable(false);
+    this.graphView.enableFlow();
+    this.graphView.enableDashFlow();
+    this.graphView.setDisabled(true);
   },
   destroyed() {
     this.ws.close();
   }
+  
 };
 </script>
 <style scoped lang='scss'>

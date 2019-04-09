@@ -63,8 +63,7 @@ export default {
             right: 2%;
         }
     }
-    .el-dialog__body{
-        border: 1px solid red;
+    .el-dialog__body{       
         background: #F0f0f0;
         .button{           
             position: absolute;
