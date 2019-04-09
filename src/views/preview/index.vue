@@ -136,10 +136,6 @@ export default {
                 item.setHtml(this.dom);
               break;
             case "pipe":
-                //  pipe.s("shape.dash.flow", true);               
-               /*  if(parseInt(wsdata[wsdata.type].d.value)===parseInt(item.s('binding_min'))){
-                    item.s("shape.dash.flow", false);
-                } */
                 if(parseInt(wsdata[wsdata.type].d.value)===parseInt(item.s('binding_max'))){
                     item.s("shape.dash.flow", true);
                 }else{
