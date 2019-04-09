@@ -31,36 +31,36 @@ export default {
           },
           {
             name: '底座',
-            icon: 'dizuo.png'
+            icon: 'dizuo.svg'
           },
-          /* {
+          {
             name: '控制柜',
-            icon: 'kongzhigui.png'
+            icon: 'ic_kongzhigui1_big.svg'
           },
           {
             name: '水泵1',
-            icon: 'shueibeng1.png'
+            icon: 'ic_shuibeng1_big.svg'
           },
           {
             name:'水管1',
-            icon: 'shuiguan1.png'
+            icon: 'shuiguan1.svg'
           },
           {
             name:'水管2',
-            icon: 'shueiguan2.png'
+            icon: 'shuiguan2.svg'
           },
           {
             name:'水箱',
-            icon: 'shueixiang.png'
+            icon: 'ic_shuixiang_big.svg'
           },
           {
             name: '稳压泵',
-            icon: 'wenyabeng.png'
+            icon: 'ic_wenyabeng_big.svg'
           },
           {
             name: '压力罐',
-            icon: 'yaliguan.png'
-          } */
+            icon: 'ic_yaliguan_big.svg'
+          }
         ]
       }
     },

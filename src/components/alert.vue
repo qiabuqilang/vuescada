@@ -14,10 +14,10 @@
 </template>
 <script>
 export default {
-     name: 'alert', 
+    name: 'alert', 
     data() {
       return{
-          error: require('@/assets/ic_jinggao.svg');
+          error: require('@/assets/ic_jinggao.svg'),
       }
     },
     methods:{}
