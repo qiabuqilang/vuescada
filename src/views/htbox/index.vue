@@ -8,9 +8,6 @@
 import { mapMutations, mapState } from "vuex";
 import types from '@/store/mutation-types';
 import {Message, MessageBox} from 'element-ui';
-
-
-import { setTimeout } from 'timers';
 import imgHouse from '@/components/imgHouse';
 export default {
   name: "htbox",

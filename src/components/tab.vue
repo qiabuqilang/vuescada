@@ -236,12 +236,11 @@ export default {
         this.yezhu.background = this.nodeInfo.getImage().comps[1].background;
         break;
         case 'text':
-        this.dom = $(this.nodeInfo.getHtml())[0];      
+        this.dom = $(this.nodeInfo.getHtml())[0];   
+        console.log('点击获取dom', this.dom);
         this.text.fontSize = parseInt(this.dom.style.fontSize);
-        this.text.color = this.dom.style.color;
-        this.dom.style.fontSize = this.text.fontSize+'px';
-        this.dom.style.color = this.text.color;
-        this.nodeInfo.setHtml(this.dom);
+        this.text.color = this.dom.style.color;       
+      
         break;
       }
     }
@@ -392,8 +391,8 @@ export default {
       if(!this.nodeInfo){
         return '';
       }
-      console.log(type,key,value);
-      this.nodeInfo.setStyle(`binding_${key}`,value)
+      console.log(type,key,value);    
+      this.nodeInfo.setStyle(`binding_${key}`,value);
       console.log('after binding is',this.nodeInfo);
     },
 
@@ -428,10 +427,14 @@ export default {
     },
     handleText(){
       this.dom = $(this.nodeInfo.getHtml())[0];
+      console.log('this.text is ',this.text);
       this.dom.style.fontWeight = this.text.fontWeight;      
+      this.dom.style.fontSize =   this.text.fontSize + 'px';      
       this.dom.style.fontStyle = this.text.fontStyle;
       this.dom.style.textDecoration = this.text.textDecoration;
+      this.dom.style.color = this.text.color;
       console.log('this.dom is',this.dom,this.dom.style.fontWeight);
+      this.nodeInfo.setHtml('');
       this.nodeInfo.setHtml(this.dom);
     },
     chooseImg(){

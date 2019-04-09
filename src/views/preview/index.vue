@@ -4,6 +4,7 @@
 <script>
 import scada from "@/api/scada";
 import { mapState, mapMutations } from "vuex";
+import scadaConfig from '@/config/scada';
 export default {
   name: "preview",
   data() {
@@ -12,63 +13,48 @@ export default {
       deviceId: '166143',
       data: "",
       viewPreview: "",
-      
+      dataModel:'',
+      graphView:''
     };
   },
   computed: {
     ...mapState(["previewData"])
   },
   methods: {
-    previewGraph() {
-      console.log("previewData is ", this.previewData);
-      let dataModel = new ht.DataModel(),
-        graphView = new ht.graph.GraphView(dataModel);
-      this.viewPreview = graphView.getView();
-      this.viewPreview.className = "viewPreview";
-      dataModel.deserialize(this.data);
-      graphView.setZoomable(false);
-      graphView.enableFlow();
-      graphView.enableDashFlow();
-      graphView.setDisabled(true);
-    },
-    
-    handleReDraw(wsdata){
-        console.log('handleReDraw',wsdata);
-        this.data.d.map(item=>{
-            if(item.s.binding_var === wsdata.type){
-                switch(item.s.nodeType){
-                    case 'yezhu':
-                    break;
-                    case 'text':
-                    break;
-                    case 'pipe':
-                    break;
-                    case 'state':
-                    break;
-                }
-            }
-        })
-    }
+    previewGraph() {    
+      this.dataModel = Object.assign(window.dataModel,{});
+      this.graphView = new ht.graph.GraphView(this.dataModel);  
+      this.viewPreview = this.graphView.getView();
+      this.viewPreview.className = "viewPreview"; 
+      this.data = this.dataModel.getDatas();   
+      console.log('this.data',this.data,this.dataModel,this.graphView);
+   
+ 
   },
-  created() {
-    this.data = Object.assign(this.previewData,{});
+  },
+  created() {   
     this.previewGraph();
   
   },
   mounted() {
     console.log("routes query", this.$route.query);
     this.$refs.preview.appendChild(this.viewPreview);
+    this.graphView.setZoomable(false);
+    this.graphView.enableFlow();
+    this.graphView.enableDashFlow();
+    this.graphView.setDisabled(true);
   },
-  destroyed(){
-      this.ws.close();
+  destroyed() {
+    this.ws.close();
   }
+  
 };
 </script>
 <style scoped lang='scss'>
 .preview {
   width: 100%;
   height: px2rem(500);
-  border: 1px solid red;
+ 
 }
 </style>
 <style lang="scss">
