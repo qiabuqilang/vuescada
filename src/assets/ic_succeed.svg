@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="110px" height="110px" viewBox="0 0 110 110" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_succeed</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1440x900" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="18发布成功" transform="translate(-665.000000, -325.000000)">
+            <g id="分组-3">
+                <g id="分组-6" transform="translate(483.000000, 278.000000)">
+                    <g id="ic/succeed" transform="translate(182.000000, 47.000000)">
+                        <circle id="椭圆形" stroke="#1AD69B" stroke-width="6" fill="#DDFFF1" cx="55" cy="55" r="52"></circle>
+                        <path d="M32.2657518,30 L32.2657518,55.7774603 L84,55.7774603 L84,62 L26,62 L26,30 L32.2657518,30 Z" id="合并形状" fill="#1AD69B" transform="translate(55.000000, 46.000000) rotate(-45.000000) translate(-55.000000, -46.000000) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
