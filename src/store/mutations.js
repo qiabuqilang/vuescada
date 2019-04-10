@@ -16,5 +16,11 @@ const mutations = {
   [types.SHOW_PREVIEW](state, payload) {
     state.showPreview = payload.showPreview;
   },
+  [types.SHOW_ALERTMY](state, payload) {
+    state.showAlertmy = payload.showAlertmy;
+  },
+  [types.SAVE_PUBLISH_DATA](state, payload) {
+    state.publishData = payload.publishData;
+  },
 };
 export default mutations;

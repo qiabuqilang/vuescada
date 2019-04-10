@@ -1,4 +1,5 @@
 <template>
+
     <div class='toolbar'>
       <el-row class="toolbar_row">
           <el-col :span="item.func==='reduce'?2:1" v-for="item of imgArr" :key="item.img" :class="item.func==='reduce'?'reduce':''">
@@ -11,6 +12,7 @@
     </div>
 </template>
 <script>
+import { Message } from 'element-ui';
 export default {
      name: 'toolbar',     
     data() {
@@ -118,6 +120,12 @@ export default {
                 break;
                 case 'unlock':
                   window.graphView.setDisabled(false);                  
+                break;
+                case 'save':
+                   Message({
+                    message: '这是糊弄你的，没有保存',
+                    type: 'success'
+                  });
                 break;
             }
         }, 
