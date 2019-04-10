@@ -131,7 +131,7 @@ export default {
 </style>
 <style lang="scss">
     .graph{    
-      width: 60% !important;
+      width: px2rem(912) !important;
       height: px2rem(780) !important;     
       div{
         z-index: 999 !important;

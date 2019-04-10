@@ -451,7 +451,7 @@ export default {
   overflow: hidden;
   font-size: px2rem(14);
   color: #333333;
-  height: px2rem(607);
+  height: px2rem(580);
   background: $mainBgColor;
   .el-radio-group {
     margin-top: px2rem(30);

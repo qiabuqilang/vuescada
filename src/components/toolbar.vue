@@ -2,6 +2,7 @@
 
     <div class='toolbar'>
       <el-row class="toolbar_row">
+        <el-col :span="1"></el-col>
           <el-col :span="item.func==='reduce'?2:1" v-for="item of imgArr" :key="item.img" :class="item.func==='reduce'?'reduce':''">
               <img :src="item.img" alt="" @click="handleClick(item)" :class="[item.clicked?'clicked':'']">
               <select name="" id="" v-if="item.func === 'reduce'" class="select" v-model="zoomValue" @change="handleSelect()">
@@ -138,20 +139,28 @@ export default {
 <style scoped lang='scss'>
 .toolbar{
     width: 100%;
-    height: px2rem(60);
-    line-height: px2rem(60);
+    height: px2rem(60);    
     background: $mainBgColor;   
     text-align: center;
-    padding-left:px2rem(50);
+    // padding-left:px2rem(50);
     .toolbar_row{
         height: px2rem(60);
         border: 1px solid transparent;      
+       .el-col{
+         height: px2rem(60);
+        
+         padding: 0px;
+         
+       }
     }
     img{
         width: px2rem(30);
         height: px2rem(30);       
         background: #fff;
-        border: 1px dashed #000;       
+        border: 1px dashed #000;  
+        display: block;
+        margin: 0 auto;
+        margin-top: px2rem(15);
         &:hover{
             border: 1px solid #617EFE;
         }
@@ -170,6 +179,7 @@ export default {
         float: right;
         border: 1px solid #000;
         height: px2rem(30);
+        margin-top: px2rem(15);
         }
     }
   

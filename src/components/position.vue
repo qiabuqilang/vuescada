@@ -4,8 +4,7 @@
             名称&nbsp;&nbsp;<span v-if="node">{{node.name}}</span>
         </h3>
         <div class="box">         
-            <div class="content" v-for="item of node" :key="item.tit">
-                
+            <div class="content" v-for="item of node" :key="item.tit">                
                 <div v-if="item.tit==='位置'">
                     <span class="tit">{{item.tit}}</span>
                      <input type="number" v-model="item.x" readonly>
@@ -67,6 +66,7 @@ export default {
 </script>
 <style scoped lang='scss'>
 .position{
+    @include borderBottom;
     .title{
         height: px2rem(50);
         line-height: px2rem(50);
@@ -75,18 +75,28 @@ export default {
         background: #fff;
     }
     .box{
-        background: #F7F7F7;
-        padding: px2rem(20) px2rem(10);
+        background: #F7F7F7;        
+        // height: px2rem(114);
+        // padding: px2rem(20) px2rem(10);
         .content{
-           span{              
-               font-size:px2rem(14);
-           }
-           div{             
-            input{            
+            // border:10px solid green;
+           div{   
+                // border:1px solid green;  
+                // height: px2rem(50);
+                padding: px2rem(20) px2rem(10);
+                overflow: hidden;
+                 span{    
+                    float: left;          
+                    font-size:px2rem(14);
+                    margin-top: px2rem(6);
+                }
+            input{  
+               float:left;          
                width: px2rem(80);
                height: px2rem(30);
                text-align: center;
                border: 1px solid #DADADA;
+               margin: 0 px2rem(10);
             }
            }
          

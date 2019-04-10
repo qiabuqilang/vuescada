@@ -1,8 +1,10 @@
 
-$designWidth: 1440;
-$designHeight: 900;    
+   
 @function px2rem($px){
-	@return $px*$designHeight/$designWidth/20 + rem;
+	@return $px/144 + rem;
+}
+@mixin borderBottom {
+    border-bottom: 1px solid #D0D0D0;
 }
 $mainBgColor: #F7F7F7;
 body,*{

@@ -24,7 +24,7 @@ import 'lib/plugin/ht-live';
 
 import 'lib/js/GridPainter';
 // ht------------
-import 'hotcss';
+import '../static/js/fontSize';
 import store from './store';
 import App from './App';
 import router from './router';
