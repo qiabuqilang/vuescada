@@ -40,23 +40,23 @@ export default {
 <style scoped lang='scss'>
 .App{
   .main_box{
-    border: 1px solid #000;
+    border: 1px solid transparent;
     width: 100%;
     height: px2rem(780);
     .left_box{
-      border: 1px solid #000;
-      width:19%;
+      border: 1px solid transparent;
+      width:px2rem(248);
       float: left;
       
     }
     .middle_box{
       // border: 10px solid #0f0;
-      width: 61%;
+      width: px2rem(912);
       float: left;
     }
     .right_box{
       // border: 10px solid #00f;
-      width:20%;
+      width:px2rem(260);
       float:right;
     }
   }

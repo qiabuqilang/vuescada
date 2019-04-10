@@ -434,8 +434,6 @@ export default {
     overflow: hidden;
     position: relative;
     box-sizing: border-box;
-  
-   
 }
 </style>
 <style lang="scss">
