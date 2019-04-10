@@ -125,6 +125,7 @@ export default {
     .graph{    
       width: px2rem(912) !important;
       height: px2rem(780) !important;     
+      border: 1px solid red !important;
       div{
         z-index: 999 !important;
       }
