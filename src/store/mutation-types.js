@@ -4,5 +4,7 @@ export default {
   GRAPH_VIEW: 'm_graphView',
   SAVE_PREVIEW_DATA: 'm_savePreviewData',
   SHOW_PREVIEW: 'm_showPreview',
+  SHOW_ALERTMY: 'm_showAlertmy',
+  SAVE_PUBLISH_DATA: 'm_savePublishData',
 }
 ;

@@ -16,15 +16,17 @@
         </el-col>
      </el-row>
      <previewBox v-if="showPreview"></previewBox>
+     <alertmy v-if="showAlertmy"></alertmy>
     </div>
 </template>
 <script>
 import { mapState, mapMutations} from 'vuex';
 import previewBox from '@/components/previewBox';
+import alertmy from '@/components/alertmy';
 export default {
     name: 'titlemy',     
     components:{
-        previewBox
+        previewBox,alertmy
     },
     data() {
       return{
@@ -43,10 +45,10 @@ export default {
       }
     },
     computed:{
-        ...mapState(['showPreview','previewData'])
+        ...mapState(['showPreview','previewData','showAlertmy'])
     },
     methods:{
-        ...mapMutations(['m_showPreview','m_savePreviewData']),
+        ...mapMutations(['m_showPreview','m_savePreviewData','m_showAlertmy']),
         handleClick(type){
             switch(type){
                 case 'preview':
@@ -56,6 +58,8 @@ export default {
                     console.log(this.showPreview,this.previewData);
                 break;
                 case 'publish':
+                    this.m_showAlertmy({showAlertmy: true});
+                    this.m_savePreviewData({publishData: window.dataModel.serialize()})
                 break;
             }
         },
