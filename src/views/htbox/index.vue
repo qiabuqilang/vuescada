@@ -1,13 +1,5 @@
 <template>
     <div class='htbox' ref="htbox">
-     <el-dialog
-      title="预览"
-      :visible.sync="showPreview"
-     fullscreen append-to-body center
-      >
-      <div class="showPreview" ref="showPreview"></div>      
-    </el-dialog>
-
     <img-house class="imgHouse" v-if="showImageHouse"/>
     </div>
 </template>
@@ -32,7 +24,7 @@ export default {
         historyManager: "",
       },     
       view: '',
-      deviceType:'c8y_MQTTDevice'
+     
     };
   },
   computed: {
@@ -77,13 +69,6 @@ export default {
         let node = new this.$ht.Node();       
        
     },
-    
-
-    
-    
- 
-    
- 
     /**
      * 绑定window窗口下快捷键
      * 

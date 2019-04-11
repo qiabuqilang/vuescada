@@ -14,6 +14,7 @@
 </template>
 <script>
 import { Message } from 'element-ui';
+import scada from '@/api/scada';
 export default {
      name: 'toolbar',     
     data() {
@@ -123,10 +124,26 @@ export default {
                   window.graphView.setDisabled(false);                  
                 break;
                 case 'save':
-                   Message({
-                    message: '这是糊弄你的，没有保存',
-                    type: 'success'
-                  });
+                    let data = { 
+                    type:'saveScada',                    
+                    scadaString: JSON.stringify(window.dataModel),
+                    deviceType: this.deviceType,
+                    deviceId: this.deviceId
+                    }
+                  scada.saveScada('/inventory/managedObjects','',data).then(res=>{
+                    console.log(res);
+                    if(res.data.id>0){
+                      Message({
+                        message: '保存成功',
+                        type: 'success'
+                      })
+                    }else{
+                      Message({
+                        message: '保存失败',
+                        type: 'error'
+                      })
+                    }
+                  })
                 break;
             }
         }, 

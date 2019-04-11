@@ -6,5 +6,7 @@ export default {
   SHOW_PREVIEW: 'm_showPreview',
   SHOW_ALERTMY: 'm_showAlertmy',
   SAVE_PUBLISH_DATA: 'm_savePublishData',
+  EDITING_DEVICE_TYPE: 'm_editingDeviceType',
+  EDITING_DEVICE_ID: 'm_editingDeviceId',
 }
 ;

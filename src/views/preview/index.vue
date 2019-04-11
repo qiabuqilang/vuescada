@@ -8,9 +8,7 @@ import scadaConfig from '@/config/scada';
 export default {
   name: "preview",
   data() {
-    return {
-      deviceType: "c8y_MQTTDevice",
-      deviceId: "166143",
+    return {    
       data: "",  
       graphView:'',
       dataModel:'',
@@ -37,7 +35,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["previewData"])
+    ...mapState(["previewData",'deviceId','deviceType'])
   },
   methods: {
     getAsyncGraph() {
@@ -56,10 +54,6 @@ export default {
             this.dataModel = new ht.DataModel();
             this.graphView = new ht.graph.GraphView(dataModel);
             this.viewPreview = graphView.getView();
-            this.dataModel.deserialize(this.data);
-            this.graphView.enableFlow();
-            this.graphView.enableDashFlow();
-            this.graphView.setDisabled(true);
           }
         });
     },
@@ -181,6 +175,7 @@ export default {
     this.graphView.enableFlow();
     this.graphView.enableDashFlow();
     this.graphView.setDisabled(true);
+    // this.graphView.fitContent(true)
   },
   destroyed() {
     this.ws.close();

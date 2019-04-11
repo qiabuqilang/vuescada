@@ -5,4 +5,6 @@ export default {
   showPreview: false,
   showAlertmy: false,
   publishData: '',
+  deviceType: 'c8y_MQTTDevice',
+  deviceId: '166143',
 };

@@ -22,5 +22,11 @@ const mutations = {
   [types.SAVE_PUBLISH_DATA](state, payload) {
     state.publishData = payload.publishData;
   },
+  [types.EDITING_DEVICE_TYPE](state, payload) {
+    state.deviceType = payload.deviceType;
+  },
+  [types.EDITING_DEVICE_ID](state, payload) {
+    state.deviceId = payload.deviceId;
+  },
 };
 export default mutations;

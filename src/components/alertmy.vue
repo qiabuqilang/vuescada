@@ -25,10 +25,11 @@
 </template>
 <script>
 import { mapState, mapMutations} from 'vuex';
+import scada from '@/api/scada';
 export default {
     name: 'alertmy', 
     computed:{
-        ...mapState(['showAlertmy'])
+        ...mapState(['showAlertmy','deviceId','deviceType'])
     },
     data() {
       return{
@@ -43,8 +44,23 @@ export default {
             this.m_showAlertmy({showAlertmy: false});
         },
         handlePublish(){
-            
-            this.innerVisible = true;
+             let data = { 
+                    type:'publishScada',                    
+                    scadaString: JSON.stringify(window.dataModel),
+                    deviceType: this.deviceType,
+                    deviceId: this.deviceId
+                    }
+                  scada.saveScada('/inventory/managedObjects','',data).then(res=>{
+                    console.log(res);
+                    if(res.data.id>0){
+                     this.innerVisible = true;
+                    }else{
+                      Message({
+                        message: '发布失败',
+                        type: 'error'
+                      })
+                    }
+                  })
         },
         handleConfirm(){
             this.innerVisible = !this.innerVisible;
